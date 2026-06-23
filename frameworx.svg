@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Path for the circular text alignment -->
+    <path id="textPath" d="M 100, 256 A 156,156 0 1,1 412,256" fill="none"/>
+  </defs>
+
+  <!-- Base Emerald Green Badge Background -->
+  <circle cx="256" cy="256" r="220" fill="#059669" stroke="#000000" stroke-width="16"/>
+  
+  <!-- Inner White Accent Ring -->
+  <circle cx="256" cy="256" r="180" fill="none" stroke="#ffffff" stroke-width="8"/>
+
+  <!-- Wrapped Text: FRAMEWORKS ACADEMY -->
+  <text font-family="Arial, sans-serif" font-size="34" font-weight="900" fill="#000000" letter-spacing="6">
+    <textPath href="#textPath" startOffset="50%" text-anchor="middle">
+      FRAMEWORKS ACADEMY
+    </textPath>
+  </text>
+
+  <!-- Central Tech/Academy Symbol (Lightbulb & Keyhole Core) -->
+  <g transform="translate(166, 150) scale(0.35)" fill="#ffffff">
+    <!-- Bulb Outline -->
+    <path d="M256 32C150 32 64 118 64 224c0 65 32 122 82 157v59c0 18 14 32 32 32h156c18 0 32-14 32-32v-59c50-35 82-92 82-157C448 118 362 32 256 32z"/>
+    <!-- Keyhole Cutout (Black) -->
+    <circle cx="256" cy="200" r="35" fill="#059669"/>
+    <path d="M236 220 L276 220 L286 310 L226 310 Z" fill="#059669"/>
+    <!-- Screw Base Details -->
+    <path d="M176 496h160v16H176z" fill="#ffffff"/>
+    <path d="M208 528h96v16h-96z" fill="#ffffff"/>
+  </g>
+</svg>

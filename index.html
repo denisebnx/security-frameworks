@@ -1,1 +1,1916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frameworks Academy by Denise — Learn Cybersecurity Frameworks & Standards</title>
+<style>
+  /* ============ DESIGN SYSTEM ============
+     Identity: a security GRC console you learn inside of.
+     Palette  : deep navy "war room" + a single warm amber/gold accent + green/red signal lights
+     Type     : Space Grotesk (display) + Inter (body) + JetBrains Mono (console/data)
+  */
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;450;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
+  :root{
+    --bg:#0d0f0e; --bg-2:#121514; --panel:#181c1a; --panel-2:#1f2522; --panel-3:#28302c;
+    --line:#2e3833; --line-bright:#3f4d46;
+    --ink:#eef3f0; --ink-dim:#a3b3ab; --ink-faint:#6a7d74;
+    --gold:#34d399; --gold-dim:#103027; --gold-deep:#0a2019;
+    --amber:#6ee7b7; --blue:#5b8def; --violet:#a78bfa; --violet-dim:#26203f;
+    --green:#5eead4; --green-dim:#0c3530; --green-deep:#072622;
+    --warn:#fbbf24; --warn-dim:#332811; --warn-deep:#241c0a;
+    --red:#f87171; --red-dim:#3a1414; --red-deep:#280d0d;
+    --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+    --disp:'Space Grotesk',var(--sans);
+    --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --rail-w:312px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.6;height:100vh;overflow:hidden;display:flex;flex-direction:column}
+  ::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:var(--line-bright);border-radius:5px}::-webkit-scrollbar-track{background:transparent}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+  button{font-family:var(--sans)}
+  a{color:var(--gold)}
+
+  /* ---------- top bar ---------- */
+  .topbar{display:flex;align-items:center;gap:14px;padding:0 18px;height:54px;background:linear-gradient(180deg,#141716,#0d0f0e);border-bottom:1px solid var(--line);flex-shrink:0;z-index:30}
+  .logo{display:flex;align-items:center;gap:11px;font-family:var(--disp);font-weight:700;font-size:16px;letter-spacing:-.3px;cursor:pointer}
+  .logo:hover{opacity:.85}
+  .nav-home{font-family:var(--disp);font-weight:600;font-size:13px;color:var(--gold);background:var(--gold-deep);border:1px solid #1d5e4a;border-radius:8px;padding:6px 13px;cursor:pointer;transition:.15s;white-space:nowrap}
+  .nav-home:hover{background:#103027;border-color:var(--gold)}
+  .nav-home:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .sound-btn{font-family:var(--disp);font-weight:600;font-size:12px;color:var(--gold);background:none;border:1px solid var(--line);border-radius:8px;padding:6px 11px;cursor:pointer;transition:.15s;white-space:nowrap}
+  .sound-btn:hover{border-color:var(--gold)}
+  .sound-btn.muted{color:var(--ink-dim)}
+  .sound-btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .logo .glyph{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:radial-gradient(circle at 30% 25%,#34d399,#0e8a63 70%);box-shadow:0 0 0 1px #34d39933,0 4px 14px #34d39922;position:relative}
+  .logo .glyph::after{content:"";position:absolute;width:13px;height:13px;border:2px solid #06231b;border-radius:3px 3px 7px 7px;border-top:none;transform:translateY(-1px)}
+  .logo .glyph::before{content:"";position:absolute;width:7px;height:7px;border:2px solid #06231b;border-bottom:none;border-radius:5px 5px 0 0;transform:translateY(-6px)}
+  .logo small{display:block;font-family:var(--sans);font-weight:500;font-size:9.5px;letter-spacing:1.6px;color:var(--ink-faint);text-transform:uppercase;margin-top:-2px}
+  .topbar .spacer{flex:1}
+  .topbar .stat{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:11.5px;color:var(--ink-dim);background:var(--panel);border:1px solid var(--line);padding:6px 12px;border-radius:8px}
+  .topbar .stat b{color:var(--gold);font-weight:700}
+  .topbar .stat .lvl{color:var(--amber)}
+  .xp-wrap{width:140px}
+  .xp-bar{height:6px;background:var(--panel-3);border-radius:3px;overflow:hidden;margin-top:4px}
+  .xp-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#34d399,#5eead4);transition:width .6s cubic-bezier(.2,.8,.2,1)}
+
+  /* ---------- shell ---------- */
+  .shell{flex:1;display:flex;overflow:hidden}
+
+  /* ---------- curriculum rail ---------- */
+  .rail{width:var(--rail-w);flex-shrink:0;background:var(--bg-2);border-right:1px solid var(--line);display:flex;flex-direction:column;overflow:hidden}
+  .rail-head{padding:16px 18px 12px;border-bottom:1px solid var(--line)}
+  .rail-head h2{font-family:var(--disp);font-size:13px;letter-spacing:.5px;text-transform:uppercase;color:var(--ink-dim);margin:0 0 3px;font-weight:600}
+  .rail-head .track{font-size:11px;color:var(--ink-faint)}
+  .rail-scroll{overflow-y:auto;flex:1;padding:8px 10px 40px}
+
+  .mod{margin-bottom:6px;border-radius:10px;overflow:hidden}
+  .mod-head{display:flex;align-items:center;gap:11px;padding:11px 12px;cursor:pointer;border-radius:9px;transition:background .15s}
+  .mod-head:hover{background:var(--panel)}
+  .mod-num{font-family:var(--disp);font-weight:700;font-size:12px;width:34px;height:34px;flex-shrink:0;display:grid;place-items:center;border-radius:8px;background:var(--panel-2);border:1px solid var(--line);color:var(--ink-dim);letter-spacing:-.5px}
+  .mod.active .mod-num,.mod.done .mod-num{background:var(--gold-deep);border-color:#1d5e4a;color:var(--gold)}
+  .mod-meta{flex:1;min-width:0}
+  .mod-meta .t{font-family:var(--disp);font-weight:600;font-size:13px;letter-spacing:-.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mod-meta .s{font-size:10.5px;color:var(--ink-faint);font-family:var(--mono);letter-spacing:.3px}
+  .mod-chev{color:var(--ink-faint);font-size:11px;transition:transform .2s;flex-shrink:0}
+  .mod.open .mod-chev{transform:rotate(90deg)}
+  .mod-status{width:7px;height:7px;border-radius:50%;background:var(--line-bright);flex-shrink:0}
+  .mod.done .mod-status{background:var(--green);box-shadow:0 0 8px var(--green)}
+  .mod.locked{opacity:.45}
+  .mod.locked .mod-head{cursor:not-allowed}
+
+  .lessons{display:none;padding:2px 0 8px 12px;margin-left:28px;border-left:1px dashed var(--line-bright)}
+  .mod.open .lessons{display:block}
+  .lesson{display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:7px;cursor:pointer;font-size:12.5px;color:var(--ink-dim);transition:.12s}
+  .lesson:hover{background:var(--panel);color:var(--ink)}
+  .lesson.active{background:var(--gold-deep);color:var(--gold)}
+  .lesson .ln{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);flex-shrink:0}
+  .lesson.active .ln{color:var(--gold)}
+  .lesson .lt{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lesson .tick{width:14px;height:14px;flex-shrink:0;opacity:0;color:var(--green)}
+  .lesson.done .tick{opacity:1}
+  .lesson.done .lt{color:var(--ink-faint)}
+
+  /* ---------- main stage ---------- */
+  .stage{flex:1;overflow-y:auto;overflow-x:hidden;position:relative}
+  .stage-inner{max-width:940px;margin:0 auto;padding:30px 36px 120px}
+
+  /* breadcrumb + lesson header */
+  .crumb{font-family:var(--mono);font-size:11px;color:var(--ink-faint);letter-spacing:.4px;margin-bottom:14px;display:flex;gap:8px;align-items:center}
+  .crumb b{color:var(--gold)}
+  .lesson-hd{margin-bottom:8px}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+  h1.title{font-family:var(--disp);font-size:34px;line-height:1.1;letter-spacing:-1px;margin:0 0 10px;font-weight:700}
+  .dek{font-size:16px;color:var(--ink-dim);max-width:680px;margin:0 0 20px}
+
+  /* step progress strip — the signature lesson player */
+  .steps{display:flex;gap:0;margin:0 0 28px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:6px;position:sticky;top:10px;z-index:20;backdrop-filter:blur(8px)}
+  .step{flex:1;display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;cursor:pointer;transition:.15s;position:relative}
+  .step:hover{background:var(--panel-2)}
+  .step.active{background:var(--gold-deep)}
+  .step .sn{font-family:var(--disp);font-weight:700;font-size:13px;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;background:var(--panel-3);color:var(--ink-dim);flex-shrink:0}
+  .step.active .sn{background:var(--gold);color:#06231b}
+  .step.done .sn{background:var(--green-deep);color:var(--green)}
+  .step .sl{font-size:12px;font-weight:600;color:var(--ink-dim)}
+  .step.active .sl{color:var(--gold)}
+  .step .sl small{display:block;font-weight:400;font-size:10px;color:var(--ink-faint);font-family:var(--mono)}
+
+  .panel-stage{display:none;animation:fade .3s ease}
+  .panel-stage.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  /* content blocks */
+  .prose{font-size:15px;line-height:1.72;color:#d6deea}
+  .prose p{margin:0 0 16px}
+  .prose h2{font-family:var(--disp);font-size:21px;letter-spacing:-.4px;margin:30px 0 12px;font-weight:600}
+  .prose h3{font-family:var(--disp);font-size:16px;margin:24px 0 10px;font-weight:600;color:var(--ink)}
+  .prose b,.prose strong{color:#fff;font-weight:600}
+  .prose code{font-family:var(--mono);font-size:12.5px;background:var(--panel-2);border:1px solid var(--line);padding:2px 6px;border-radius:5px;color:var(--gold)}
+  .prose ul,.prose ol{margin:0 0 16px;padding-left:22px}
+  .prose li{margin:6px 0}
+  .prose a{text-decoration:none;border-bottom:1px solid var(--gold-dim)}
+
+  .keyterm{background:linear-gradient(180deg,var(--panel),var(--panel-2));border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:10px;padding:16px 18px;margin:20px 0}
+  .keyterm .kt-label{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+  .keyterm .kt-term{font-family:var(--disp);font-weight:600;font-size:16px;margin-bottom:5px}
+
+  .callout{display:flex;gap:12px;border-radius:10px;padding:14px 16px;margin:18px 0;font-size:13.5px;line-height:1.6}
+  .callout .ic{font-size:16px;flex-shrink:0;margin-top:1px}
+  .callout.tip{background:var(--gold-deep);border:1px solid #1d5e4a;color:#bff0dd}
+  .callout.warn{background:var(--warn-deep);border:1px solid #5c4a1a;color:#f5d98a}
+  .callout.danger{background:var(--red-deep);border:1px solid #5c2424;color:#f5a8a8}
+  .callout.real{background:var(--violet-dim);border:1px solid #4a3a6b;color:#cbb8f0}
+  .callout b{color:#fff}
+
+  .analogy{border:1px dashed var(--line-bright);border-radius:10px;padding:16px 18px;margin:18px 0;background:var(--bg-2)}
+  .analogy .al{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--violet);margin-bottom:7px}
+
+  /* worked example console frame */
+  .console{border:1px solid var(--line-bright);border-radius:12px;overflow:hidden;margin:18px 0;background:var(--bg-2);box-shadow:0 10px 40px #0006}
+  .console-bar{display:flex;align-items:center;gap:8px;padding:9px 14px;background:linear-gradient(180deg,#1c211e,#141716);border-bottom:1px solid var(--line)}
+  .console-bar .dots{display:flex;gap:6px}
+  .console-bar .dots i{width:10px;height:10px;border-radius:50%;display:block}
+  .console-bar .title{font-family:var(--mono);font-size:11.5px;color:var(--ink-dim);letter-spacing:.3px}
+  .console-bar .chip{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--gold);background:var(--gold-deep);border:1px solid #1d5e4a;padding:2px 9px;border-radius:20px}
+  .console-body{padding:16px 18px}
+
+  .example-wrap{margin:18px 0}
+  .example-label{font-family:var(--mono);font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .example-label::before{content:"";width:18px;height:1px;background:var(--gold)}
+
+  /* generic UI atoms reused by simulators */
+  .fld-label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.7px;color:var(--ink-faint);margin:14px 0 6px;font-weight:600}
+  input[type=text],input[type=number],input[type=password],select,textarea{width:100%;background:var(--bg);border:1px solid var(--line-bright);color:var(--ink);border-radius:8px;padding:10px 12px;font-family:var(--mono);font-size:13px}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-deep)}
+  textarea{resize:vertical;line-height:1.6;tab-size:2}
+  .btn{background:var(--gold);color:#06231b;border:none;padding:10px 18px;border-radius:8px;font-weight:650;cursor:pointer;font-size:13px;display:inline-flex;align-items:center;gap:8px;transition:.15s}
+  .btn:hover{filter:brightness(1.1);transform:translateY(-1px)}
+  .btn:active{transform:none}
+  .btn.ghost{background:var(--panel-2);color:var(--ink);border:1px solid var(--line-bright)}
+  .btn.green{background:var(--green);color:#04221a}
+  .btn.amber{background:var(--amber);color:#06231b}
+  .btn.danger{background:var(--red);color:#2a0a0a}
+  .btn.sm{padding:6px 12px;font-size:12px}
+  .btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+
+  /* lab container */
+  .lab-frame{border:1px solid var(--line-bright);border-radius:14px;overflow:hidden;margin:8px 0 20px;background:var(--panel)}
+  .lab-top{display:flex;align-items:center;gap:12px;padding:14px 18px;background:linear-gradient(180deg,var(--panel-2),var(--panel));border-bottom:1px solid var(--line)}
+  .lab-top .badge-lab{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;background:var(--green-deep);color:var(--green);border:1px solid #14533f;padding:3px 10px;border-radius:6px}
+  .lab-top h3{font-family:var(--disp);margin:0;font-size:16px;font-weight:600}
+  .lab-objective{background:var(--gold-deep);border:1px solid #1d5e4a;border-radius:9px;padding:12px 15px;margin:0 0 4px;font-size:13.5px;color:#bff0dd}
+  .lab-objective b{color:#fff}
+  .lab-body{padding:18px}
+  .mission{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+  .mission .m{flex:1;min-width:180px;background:var(--bg-2);border:1px solid var(--line);border-radius:9px;padding:11px 13px;font-size:12.5px}
+  .mission .m .mt{font-family:var(--mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:4px}
+
+  .result{margin-top:14px;border-radius:10px;padding:14px 16px;display:none;animation:fade .3s}
+  .result.show{display:block}
+  .result.pass{background:var(--green-deep);border:1px solid #14533f}
+  .result.fail{background:var(--red-deep);border:1px solid #5c2424}
+  .result .rv{font-family:var(--disp);font-weight:700;font-size:15px;display:flex;align-items:center;gap:9px}
+  .result.pass .rv{color:var(--green)}.result.fail .rv{color:var(--red)}
+  .result ul{margin:10px 0 0;padding-left:6px;list-style:none}
+  .result li{padding:4px 0;font-size:12.5px;font-family:var(--mono);display:flex;gap:8px;align-items:flex-start}
+  .result li .mk{flex-shrink:0}
+
+  /* decision/trace output */
+  .decision{border-radius:10px;padding:14px 16px;margin:14px 0;border:1px solid}
+  .decision.allow{background:var(--green-deep);border-color:#14533f}
+  .decision.deny{background:var(--red-deep);border-color:#5c2424}
+  .decision.warn{background:var(--warn-deep);border-color:#5c4a1a}
+  .verdict{font-family:var(--disp);font-size:16px;font-weight:700;display:flex;align-items:center;gap:9px}
+  .allow .verdict{color:var(--green)}.deny .verdict{color:var(--red)}.warn .verdict{color:var(--amber)}
+  .why{color:var(--ink-dim);margin-top:6px;font-size:13px}
+  .trace{list-style:none;margin:12px 0 0;padding:0;font-family:var(--mono);font-size:12px}
+  .trace li{padding:8px 12px;border-left:3px solid var(--line-bright);margin-bottom:6px;background:var(--panel-2);border-radius:0 7px 7px 0}
+  .trace li.good{border-left-color:var(--green)}.trace li.bad{border-left-color:var(--red)}.trace li.skip{opacity:.5}
+  .tag{font-size:9.5px;padding:2px 7px;border-radius:5px;margin-right:8px;font-weight:700;letter-spacing:.5px}
+  .tag.A{background:var(--green);color:#04221a}.tag.D{background:var(--red);color:#2a0a0a}.tag.N{background:var(--line-bright);color:var(--ink-dim)}
+
+  /* quiz */
+  .quiz-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin:16px 0}
+  .quiz-q{font-family:var(--disp);font-size:16px;font-weight:600;margin:4px 0 16px;line-height:1.4}
+  .quiz-opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--bg-2);border:1px solid var(--line-bright);color:var(--ink);padding:13px 15px;border-radius:9px;margin-bottom:9px;cursor:pointer;font-size:13.5px;transition:.13s}
+  .quiz-opt:hover{border-color:var(--gold);background:var(--panel-2)}
+  .quiz-opt .ltr{font-family:var(--mono);font-weight:700;width:25px;height:25px;flex-shrink:0;display:grid;place-items:center;background:var(--panel-3);border-radius:6px;font-size:12px}
+  .quiz-opt.correct{background:var(--green-deep);border-color:var(--green)}
+  .quiz-opt.correct .ltr{background:var(--green);color:#04221a}
+  .quiz-opt.wrong{background:var(--red-deep);border-color:var(--red)}
+  .quiz-opt.wrong .ltr{background:var(--red);color:#2a0a0a}
+  .quiz-explain{background:var(--bg-2);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:9px;padding:13px 16px;margin-top:6px;font-size:13px;color:var(--ink-dim);display:none}
+  .quiz-explain.show{display:block}
+  .quiz-explain b{color:var(--ink)}
+  .quiz-progress{font-family:var(--mono);font-size:11px;color:var(--ink-faint);margin-bottom:6px}
+
+  /* lesson nav footer */
+  .lesson-nav{display:flex;justify-content:space-between;gap:14px;margin-top:36px;padding-top:24px;border-top:1px solid var(--line)}
+  .lesson-nav button{background:var(--panel);border:1px solid var(--line-bright);color:var(--ink);padding:13px 18px;border-radius:10px;cursor:pointer;font-size:13px;display:flex;flex-direction:column;gap:2px;min-width:200px;transition:.15s}
+  .lesson-nav button:hover:not(:disabled){border-color:var(--gold);background:var(--panel-2)}
+  .lesson-nav button:disabled{opacity:.3;cursor:not-allowed}
+  .lesson-nav button.next{text-align:right;align-items:flex-end;background:var(--gold-deep);border-color:#1d5e4a}
+  .lesson-nav .nl{font-family:var(--mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--ink-faint)}
+  .lesson-nav .nt{font-family:var(--disp);font-weight:600;font-size:13.5px;color:var(--ink)}
+
+  /* badge toast */
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120px);background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid var(--gold);border-radius:14px;padding:14px 22px;display:flex;align-items:center;gap:14px;box-shadow:0 16px 50px #000a,0 0 0 1px #34d39922;z-index:100;transition:transform .5s cubic-bezier(.2,.9,.2,1)}
+  .toast.show{transform:translateX(-50%) translateY(0)}
+  .toast .tb{width:42px;height:42px;border-radius:10px;display:grid;place-items:center;font-size:22px;background:radial-gradient(circle at 30% 25%,#34d399,#0e8a63)}
+  .toast .tt{font-family:var(--disp);font-weight:700;font-size:14px}
+  .toast .ts{font-size:12px;color:var(--ink-dim)}
+
+  /* welcome / dashboard */
+  .hero{text-align:center;padding:40px 0 20px}
+  .hero .eyebrow{justify-content:center}
+  .hero h1{font-family:var(--disp);font-size:46px;letter-spacing:-1.5px;margin:6px 0 12px;font-weight:700;background:linear-gradient(180deg,#fff,#a3b3ab);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .hero p{font-size:17px;color:var(--ink-dim);max-width:600px;margin:0 auto 26px}
+  .track-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin:24px 0}
+  .track-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;cursor:pointer;transition:.18s;position:relative;overflow:hidden}
+  .track-card:hover{border-color:var(--gold);transform:translateY(-3px);box-shadow:0 12px 30px #0006}
+  .track-card .tn{font-family:var(--mono);font-size:11px;color:var(--gold);letter-spacing:1px}
+  .track-card h3{font-family:var(--disp);font-size:17px;margin:8px 0 6px;font-weight:600}
+  .track-card p{font-size:12.5px;color:var(--ink-dim);margin:0 0 12px;line-height:1.5}
+  .track-card .meta{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);display:flex;gap:12px}
+  .track-card.soon{opacity:.6}
+  .track-card.soon::after{content:"COMING SOON";position:absolute;top:12px;right:-30px;background:var(--amber);color:#06231b;font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:1px;padding:3px 32px;transform:rotate(45deg)}
+
+  .stat-strip{display:flex;gap:14px;justify-content:center;margin:20px 0 10px;flex-wrap:wrap}
+  .stat-box{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 24px;text-align:center;min-width:120px}
+  .stat-box .v{font-family:var(--disp);font-size:28px;font-weight:700;color:var(--gold)}
+  .stat-box .l{font-family:var(--mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--ink-faint);margin-top:2px}
+
+  .pill-set{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+  .pill{font-family:var(--mono);font-size:11px;padding:5px 11px;border-radius:20px;background:var(--panel-2);border:1px solid var(--line);color:var(--ink-dim)}
+  .reset-pill{cursor:pointer;transition:.15s}
+  .reset-pill:hover{border-color:var(--red);color:var(--red)}
+  .resume-card{display:flex;align-items:center;gap:20px;background:linear-gradient(110deg,var(--gold-deep),var(--panel) 60%);border:1px solid #1d5e4a;border-radius:16px;padding:20px 24px;margin:6px 0 14px;box-shadow:0 10px 40px #0006}
+  .resume-main{flex:1;min-width:0}
+  .resume-label{font-family:var(--mono);font-size:10.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--gold);margin-bottom:5px}
+  .resume-title{font-family:var(--disp);font-size:23px;font-weight:700;letter-spacing:-.5px;line-height:1.1}
+  .resume-sub{color:var(--ink-dim);font-size:13.5px;margin-top:4px}
+  .resume-prog{display:flex;align-items:center;gap:12px;margin-top:12px}
+  .resume-prog-bar{flex:1;max-width:340px;height:7px;background:var(--panel-3);border-radius:4px;overflow:hidden}
+  .resume-prog-bar i{display:block;height:100%;background:linear-gradient(90deg,#34d399,#5eead4);border-radius:4px}
+  .resume-prog span{font-family:var(--mono);font-size:11px;color:var(--ink-dim);white-space:nowrap}
+  .resume-btn{flex-shrink:0;font-size:14px;padding:13px 22px}
+  @media (max-width:880px){.resume-card{flex-direction:column;align-items:stretch}.resume-btn{width:100%;justify-content:center}}
+  /* About (Module 00) rail entry */
+  .about-mod{margin-bottom:10px;border:1px solid #1a4034;background:linear-gradient(120deg,var(--gold-deep),transparent 70%);border-radius:11px}
+  .about-mod .mod-num{background:var(--gold-deep);border-color:#1d5e4a;color:var(--gold)}
+  .about-mod .mod-chev{color:var(--gold)}
+  .about-mod.active-mod{box-shadow:0 0 0 1px var(--gold) inset}
+  .about-mod .mod-head:hover{background:#0e2a22}
+  /* Capstone rail entry */
+  .capstone-mod{margin-top:10px;border:1px solid #1a4034;background:linear-gradient(120deg,var(--gold-deep),transparent 70%);border-radius:11px}
+  .capstone-mod .mod-num{background:var(--gold-deep);border-color:#1d5e4a;color:var(--gold)}
+  .capstone-mod .mod-chev{color:var(--gold);font-size:13px}
+  .capstone-mod.active-mod{box-shadow:0 0 0 1px var(--gold) inset}
+  .capstone-mod .mod-head:hover{background:#0e2a22}
+  /* About page */
+  .about-wrap{max-width:760px}
+  .about-h1{font-family:var(--disp);font-size:34px;letter-spacing:-.6px;margin:6px 0 20px;line-height:1.08}
+  .about-card{display:flex;gap:20px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:26px 28px;box-shadow:0 10px 40px #0005}
+  .about-badge{flex-shrink:0;width:56px;height:56px;border-radius:14px;display:grid;place-items:center;font-family:var(--disp);font-weight:700;font-size:20px;letter-spacing:-.5px;color:var(--gold);background:var(--gold-deep);border:1px solid #1d5e4a}
+  .about-name{font-family:var(--disp);font-weight:700;font-size:21px;letter-spacing:-.3px}
+  .about-role{font-family:var(--mono);font-size:11.5px;letter-spacing:.6px;text-transform:uppercase;color:var(--gold);margin:2px 0 14px}
+  .about-body p{font-size:15px;line-height:1.7;color:var(--ink);margin:0 0 13px}
+  .about-body p:last-child{margin-bottom:0;color:var(--ink-dim)}
+  .about-linkedin{margin-top:16px !important;color:var(--ink) !important}
+  .about-linkedin a{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:13px;color:var(--gold);text-decoration:none;border:1px solid #1d5e4a;background:var(--gold-deep);padding:8px 14px;border-radius:9px;transition:.15s}
+  .about-linkedin a:hover{background:#103027;border-color:var(--gold)}
+  .about-actions{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+  @media (max-width:680px){.about-card{flex-direction:column;gap:14px}.about-h1{font-size:27px}}
+  @media (max-width:720px){.logo small{display:none}.nav-home{font-size:0;padding:7px 10px}.nav-home::before{content:'⌂';font-size:15px}.sound-btn{font-size:0;padding:7px 10px}.sound-btn::before{content:'♪';font-size:14px}.stat.xp-wrap{display:none}}
+
+  table.dt{width:100%;border-collapse:collapse;font-size:12.5px;margin:14px 0}
+  table.dt th,table.dt td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line)}
+  table.dt th{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-faint);font-weight:600}
+  table.dt tr:hover td{background:var(--panel)}
+  table.dt code{font-family:var(--mono);font-size:11.5px;color:var(--gold)}
+  .st-badge{font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600}
+  .st-badge.g{background:var(--green-deep);color:var(--green)}.st-badge.r{background:var(--red-deep);color:var(--red)}.st-badge.a{background:var(--warn-deep);color:var(--amber)}.st-badge.b{background:var(--gold-deep);color:var(--gold)}
+
+  .mono-out{font-family:var(--mono);font-size:12px;line-height:1.6;white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:14px;color:#cdd9e5}
+
+  .empty-hint{color:var(--ink-faint);font-style:italic;font-size:13px}
+  .hidden{display:none!important}
+
+  @media (max-width:880px){
+    .rail{position:absolute;z-index:40;height:100%;transform:translateX(-100%);transition:transform .3s}
+    .rail.mobile-open{transform:none}
+    .stage-inner{padding:20px 18px 100px}
+    h1.title{font-size:26px}
+    .steps{flex-wrap:wrap}.step{min-width:130px}
+    .lesson-nav{flex-direction:column}.lesson-nav button{min-width:0}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo" id="homeLogo" title="Back to curriculum"><div class="glyph"></div><div>Frameworks Academy<small>Cybersecurity Standards &amp; Frameworks</small></div></div>
+  <button class="nav-home" id="navHome" title="Back to the curriculum overview">⌂ Curriculum</button>
+  <button class="sound-btn" id="soundBtn" title="Sound" aria-pressed="true">♪ Sound</button>
+  <div class="spacer"></div>
+  <div class="stat" title="Lessons completed"><span>✓</span> <b id="doneCount">0</b>/<span id="totalCount">0</span> lessons</div>
+  <div class="stat"><span class="lvl">★</span> Level <b class="lvl" id="levelNum">1</b></div>
+  <div class="stat xp-wrap"><div style="width:100%"><div style="display:flex;justify-content:space-between"><span>XP</span><b id="xpNum">0</b></div><div class="xp-bar"><i id="xpFill"></i></div></div></div>
+</div>
+
+<div class="shell">
+  <aside class="rail">
+    <div class="rail-head">
+      <h2>Curriculum</h2>
+      <div class="track" id="trackName">Track 1 · The 5 Framework &amp; Standard Groups</div>
+    </div>
+    <div class="rail-scroll" id="railScroll"></div>
+  </aside>
+
+  <main class="stage" id="stage">
+    <div class="stage-inner" id="stageInner"></div>
+  </main>
+</div>
+
+<div class="toast" id="toast">
+  <div class="tb" id="toastIcon">🏅</div>
+  <div><div class="tt" id="toastTitle">Badge earned</div><div class="ts" id="toastSub"></div></div>
+</div>
+
+<script>
+/* =====================================================================
+   SOUND — synthesized audio cues (Web Audio API, no external files).
+   ===================================================================== */
+const SOUND = (function(){
+  let enabled = true;
+  let ctx = null;
+  try{ const v=localStorage.getItem('fw_sound'); if(v==='off') enabled=false; }catch(e){}
+  function ac(){ if(!ctx){ try{ ctx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ ctx=null; } } return ctx; }
+  function tone(freq, start, dur, type, gain){
+    const a=ac(); if(!a) return;
+    const o=a.createOscillator(), g=a.createGain();
+    o.type=type||'sine'; o.frequency.value=freq;
+    o.connect(g); g.connect(a.destination);
+    const t=a.currentTime+start;
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(gain||0.12, t+0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+    o.start(t); o.stop(t+dur+0.02);
+  }
+  return {
+    isOn(){ return enabled; },
+    set(on){ enabled=!!on; try{ localStorage.setItem('fw_sound', enabled?'on':'off'); }catch(e){} },
+    toggle(){ this.set(!enabled); return enabled; },
+    success(){ if(!enabled) return; const a=ac(); if(a&&a.state==='suspended')a.resume(); tone(660,0,0.16,'sine',0.10); tone(990,0.10,0.22,'sine',0.10); },
+    error(){ if(!enabled) return; const a=ac(); if(a&&a.state==='suspended')a.resume(); tone(300,0,0.12,'triangle',0.09); tone(240,0.12,0.16,'triangle',0.09); },
+    tick(){ if(!enabled) return; const a=ac(); if(a&&a.state==='suspended')a.resume(); tone(880,0,0.07,'sine',0.06); },
+    fanfare(){ if(!enabled) return; const a=ac(); if(a&&a.state==='suspended')a.resume(); [523,659,784,1047].forEach((f,i)=>tone(f,i*0.10,0.28,'sine',0.10)); }
+  };
+})();
+
+/* =====================================================================
+   FRAMEWORKS ACADEMY — core runtime
+   ===================================================================== */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+function el(h){const t=document.createElement('template');t.innerHTML=h.trim();return t.content.firstChild;}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+const STORE_KEY='frameworks-academy-progress-v1';
+const STATE={done:new Set(),xp:0,badges:new Set(),last:null};
+let STORAGE_OK=true, STORAGE_CHECKED=false, CURRENT=null;
+function storageAvailable(){
+  if(STORAGE_CHECKED)return STORAGE_OK;
+  STORAGE_CHECKED=true;
+  try{const t='__fw_test__';window.localStorage.setItem(t,'1');window.localStorage.removeItem(t);STORAGE_OK=true;}
+  catch(e){STORAGE_OK=false;}
+  return STORAGE_OK;
+}
+function saveState(){
+  if(!storageAvailable())return;
+  try{window.localStorage.setItem(STORE_KEY,JSON.stringify({done:[...STATE.done],xp:STATE.xp,badges:[...STATE.badges],last:STATE.last,ts:Date.now()}));}catch(e){}
+}
+function loadState(){
+  if(!storageAvailable())return false;
+  try{
+    const raw=window.localStorage.getItem(STORE_KEY);if(!raw)return false;
+    const o=JSON.parse(raw);
+    STATE.done=new Set(Array.isArray(o.done)?o.done:[]);
+    STATE.xp=typeof o.xp==='number'?o.xp:0;
+    STATE.badges=new Set(Array.isArray(o.badges)?o.badges:[]);
+    STATE.last=o.last||null;
+    return STATE.done.size>0||STATE.xp>0;
+  }catch(e){return false;}
+}
+function resetState(){
+  STATE.done=new Set();STATE.xp=0;STATE.badges=new Set();STATE.last=null;
+  if(storageAvailable()){try{window.localStorage.removeItem(STORE_KEY);}catch(e){}}
+}
+const XP_PER={concept:10,example:10,lab:40,quiz:25,lesson:15};
+function levelFromXp(xp){return Math.floor(xp/250)+1;}
+function addXp(n){STATE.xp+=n;const lv=levelFromXp(STATE.xp);$('#xpNum').textContent=STATE.xp;$('#levelNum').textContent=lv;
+  const into=STATE.xp%250;$('#xpFill').style.width=(into/250*100)+'%';}
+function markDone(key,xp){if(STATE.done.has(key))return false;STATE.done.add(key);if(xp)addXp(xp);refreshProgressUI();saveState();return true;}
+function refreshProgressUI(){
+  const lessonsDone=new Set();
+  STATE.done.forEach(k=>{if(k.startsWith('L:'))lessonsDone.add(k);});
+  $('#doneCount').textContent=lessonsDone.size;
+  $$('.lesson').forEach(li=>{const id=li.dataset.lesson;li.classList.toggle('done',STATE.done.has('L:'+id));});
+  $$('.mod').forEach(m=>{const mid=m.dataset.mod;const lessons=CURRICULUM.find(x=>x.id===mid)?.lessons||[];
+    const all=lessons.length&&lessons.every(l=>STATE.done.has('L:'+l.id));m.classList.toggle('done',all);});
+}
+let TOAST_T;
+function toast(icon,title,sub){const t=$('#toast');$('#toastIcon').textContent=icon;$('#toastTitle').textContent=title;$('#toastSub').textContent=sub||'';
+  t.classList.add('show');clearTimeout(TOAST_T);TOAST_T=setTimeout(()=>t.classList.remove('show'),3400);}
+function earnBadge(id,icon,title,sub){if(STATE.badges.has(id))return;STATE.badges.add(id);saveState();toast(icon,title,sub);
+  try{ if(typeof SOUND!=='undefined'){ if(icon==='🏆') SOUND.fanfare(); else SOUND.success(); } }catch(e){}
+}
+</script>
+
+<script>
+/* =====================================================================
+   CURRICULUM — Track 1: The 5 Cybersecurity Framework & Standard Groups
+   Each lesson: {id,num,title,dek,minutes,concept(html),example(html),lab(obj),quiz[]}
+   ===================================================================== */
+const CURRICULUM=[
+
+/* ============================ MODULE 01 ============================ */
+{ id:'M01', num:'01', title:'Risk Management Frameworks', sub:'6 lessons · the backbone',
+  blurb:'The frameworks that tell you how to identify, assess, and treat risk: NIST CSF, the NIST RMF, SP 800-53 and 800-171, the ISO 27000 family, and the FAIR quantitative model.',
+  lessons:[
+
+  { id:'01.1', num:'01.1', title:'NIST Cybersecurity Framework (CSF 2.0)', minutes:8,
+    dek:'The most widely adopted voluntary framework in the world — a common language for managing cyber risk, organized around a handful of plain-English functions.',
+    concept:`<p>The <b>NIST Cybersecurity Framework</b> is a voluntary, risk-based framework first published in 2014 and updated to <b>version 2.0 in 2024</b>. It is deliberately not a checklist of controls — it is a way to <i>organize and communicate</i> cybersecurity outcomes that any organization, in any sector, of any size, can map their existing practices onto.</p>
+    <div class="keyterm"><div class="kt-label">Core definition</div><div class="kt-term">NIST CSF 2.0</div>A voluntary framework of cybersecurity outcomes organized into six Functions, used to assess and improve an organization's ability to manage cyber risk and to communicate that posture to stakeholders.</div>
+    <h3>The six Functions</h3>
+    <p>CSF 2.0 organizes everything under six top-level <b>Functions</b>. Version 1.1 had five; 2.0 added <b>Govern</b> as a new function that wraps around the others.</p>
+    <ul>
+      <li><b>Govern (GV)</b> — the new sixth function: roles, policy, strategy, oversight, and risk management decisions. It informs all the others.</li>
+      <li><b>Identify (ID)</b> — understand assets, data, suppliers, and the risks to them.</li>
+      <li><b>Protect (PR)</b> — safeguards: access control, awareness, data security, platform security.</li>
+      <li><b>Detect (DE)</b> — find anomalies and incidents quickly.</li>
+      <li><b>Respond (RS)</b> — contain, analyze, and act on incidents.</li>
+      <li><b>Recover (RC)</b> — restore capabilities and learn from the event.</li>
+    </ul>
+    <div class="analogy"><div class="al">Think of it like</div>A hospital's emergency readiness. <b>Govern</b> is the hospital board setting policy and budget. <b>Identify</b> is knowing your patients, equipment, and supply chain. <b>Protect</b> is hygiene, locks, and training. <b>Detect</b> is the monitors and alarms. <b>Respond</b> is the crash team. <b>Recover</b> is rehab and the post-incident review. The framework doesn't tell you which brand of monitor to buy — it tells you that you need monitoring at all.</div>
+    <h3>Tiers and Profiles</h3>
+    <p>Two more pieces make CSF usable. <b>Implementation Tiers</b> (1–4: Partial, Risk Informed, Repeatable, Adaptive) describe how mature and integrated your risk management is. <b>Profiles</b> are a snapshot of which outcomes you've achieved ("Current Profile") versus where you want to be ("Target Profile"); the gap between them is your roadmap.</p>
+    <div class="callout real"><span class="ic">🛰️</span><div><b>From the field:</b> CSF is most often used as a <i>common reference</i>. A CISO presents a CSF profile heat-map to the board because "we're Tier 2 on Detect and want to reach Tier 3" communicates far better than a list of 200 technical controls.</div></div>`,
+    example:`<p>Here's how a single real activity maps cleanly onto a CSF Function and Category. Read each line as "this outcome belongs to this function."</p>
+    <div class="example-wrap"><div class="example-label">Worked example · mapping activities to CSF Functions</div>
+    <div class="console"><div class="console-bar"><div class="dots"><i style="background:#f87171"></i><i style="background:#fbbf24"></i><i style="background:#34d399"></i></div><div class="title">csf-profile.map</div><div class="chip">CSF 2.0</div></div>
+    <div class="console-body"><div class="mono-out">activity                                   function   category
+-----------------------------------------------------------------
+Board approves a cyber risk appetite       <span style="color:#34d399">GOVERN</span>     GV.RM (Risk Mgmt Strategy)
+Maintain an inventory of all servers       <span style="color:#34d399">IDENTIFY</span>   ID.AM (Asset Management)
+Enforce MFA on all admin accounts          <span style="color:#34d399">PROTECT</span>    PR.AA (Identity & Access)
+SIEM alerts on anomalous logins            <span style="color:#34d399">DETECT</span>     DE.CM (Continuous Monitoring)
+Activate the incident response plan        <span style="color:#34d399">RESPOND</span>    RS.MA (Incident Management)
+Restore systems from clean backups         <span style="color:#34d399">RECOVER</span>    RC.RP (Incident Recovery)</div></div></div>
+    <p>Notice each activity is an <b>outcome</b>, not a product. "Enforce MFA" lives under Protect regardless of whether you use Okta, Duo, or Entra. That product-neutrality is exactly why CSF travels so well across industries.</p></div>`,
+    lab:{ kind:'classify', id:'01.1',
+      title:'Sort activities into CSF Functions',
+      objective:'Assign each security activity to the correct CSF 2.0 <b>Function</b>. This is the core literacy skill for using the framework: hearing an activity and instinctively knowing where it lives.',
+      intro:'Six activities. Tag each with its Function. All correct completes the lab.',
+      threeway:['Govern','Identify','Protect','Detect','Respond','Recover'],
+      items:[
+        {t:'Publishing a company-wide cybersecurity policy and assigning a risk owner.',layer:'Govern'},
+        {t:'Building and maintaining a complete hardware and software asset inventory.',layer:'Identify'},
+        {t:'Encrypting laptops and enforcing least-privilege access.',layer:'Protect'},
+        {t:'Deploying endpoint detection that flags unusual process behavior.',layer:'Detect'},
+        {t:'Following the runbook to contain a ransomware outbreak.',layer:'Respond'},
+        {t:'Restoring operations from backups and running a lessons-learned review.',layer:'Recover'}
+      ]},
+    quiz:[
+      {q:'Which Function is new in CSF 2.0 compared to version 1.1?',
+       o:['Detect','Govern','Recover','Identify'],a:1,
+       e:'CSF 2.0 added Govern as a sixth function that wraps around and informs the other five, reflecting how central governance is to managing cyber risk.'},
+      {q:'What does a CSF "Profile" represent?',
+       o:['A certification you pass or fail','A snapshot of current vs. target outcomes, revealing a roadmap','A required list of technical controls','A vendor product comparison'],a:1,
+       e:'A Profile aligns the Functions/Categories to your business needs; comparing a Current Profile to a Target Profile produces your improvement roadmap.'},
+      {q:'Why is CSF described as product-neutral?',
+       o:['It bans commercial tools','It describes outcomes (e.g., "enforce MFA"), not specific products','It only works for government','It is identical to ISO 27001'],a:1,
+       e:'CSF specifies the outcome to achieve, leaving the choice of technology to the organization — which is why it maps onto any environment.'}
+    ]},
+
+  { id:'01.2', num:'01.2', title:'NIST Risk Management Framework (RMF)', minutes:8,
+    dek:'SP 800-37: the seven-step process U.S. federal systems use to authorize a system to operate — and a rigorous model anyone can borrow.',
+    concept:`<p>Where CSF is a <i>language</i> for risk, the <b>NIST Risk Management Framework (RMF)</b>, defined in <b>SP 800-37</b>, is a <i>process</i>. It is the disciplined, repeatable lifecycle U.S. federal agencies must follow to manage security and privacy risk and to grant a system an <b>Authorization to Operate (ATO)</b>.</p>
+    <div class="keyterm"><div class="kt-label">Core definition</div><div class="kt-term">RMF (SP 800-37)</div>A seven-step lifecycle for managing security and privacy risk to information systems, culminating in a risk-based decision to authorize the system to operate.</div>
+    <h3>The seven steps</h3>
+    <ol>
+      <li><b>Prepare</b> — set context, roles, and risk tolerance (added in RMF rev 2).</li>
+      <li><b>Categorize</b> — classify the system by impact (using FIPS 199: low/moderate/high).</li>
+      <li><b>Select</b> — choose a baseline of controls from SP 800-53.</li>
+      <li><b>Implement</b> — deploy the controls.</li>
+      <li><b>Assess</b> — test whether controls are working (often per SP 800-53A).</li>
+      <li><b>Authorize</b> — a senior official accepts the residual risk and grants the ATO.</li>
+      <li><b>Monitor</b> — continuously track control effectiveness and changes.</li>
+    </ol>
+    <div class="analogy"><div class="al">Think of it like</div>Getting a building cleared for occupancy. You <b>prepare</b> the project, <b>categorize</b> how critical the building is, <b>select</b> the right codes, <b>build</b> to them, <b>inspect</b>, then an official <b>signs the occupancy permit</b> accepting any remaining issues — and the building stays under ongoing inspection. The ATO is that occupancy permit for a computer system.</div>
+    <div class="callout warn"><span class="ic">⚠️</span><div>The <b>Authorize</b> step is a human accepting risk, not a clean bill of health. Systems routinely get an ATO with known, documented weaknesses tracked in a <b>POA&amp;M</b> (Plan of Action and Milestones). "Authorized" means "the risk is understood and accepted," not "perfectly secure."</div></div>`,
+    example:`<p>Watch one system move through the front half of the RMF. The Categorize step drives everything downstream.</p>
+    <div class="example-wrap"><div class="example-label">Worked example · a payroll system enters the RMF</div>
+    <div class="console"><div class="console-bar"><div class="dots"><i style="background:#f87171"></i><i style="background:#fbbf24"></i><i style="background:#34d399"></i></div><div class="title">rmf-pipeline.log</div></div>
+    <div class="console-body"><div class="mono-out"><span style="color:#fbbf24">PREPARE</span>    system owner + AO assigned, risk tolerance = low
+<span style="color:#fbbf24">CATEGORIZE</span> contains SSNs & salaries → confidentiality = HIGH
+           overall impact (FIPS 199) = <span style="color:#f87171">HIGH</span>
+<span style="color:#fbbf24">SELECT</span>     pull the 800-53 HIGH baseline (~370 controls)
+           tailor: drop N/A controls, add privacy overlay
+<span style="color:#fbbf24">IMPLEMENT</span>  deploy controls, document in the SSP
+<span style="color:#fbbf24">ASSESS</span>     assessor tests → 8 findings logged to POA&M
+<span style="color:#fbbf24">AUTHORIZE</span>  AO reviews residual risk → grants <span style="color:#34d399">ATO (3 yr)</span>
+<span style="color:#fbbf24">MONITOR</span>    continuous monitoring begins</div></div></div>
+    <p>The single most consequential choice is <b>Categorize</b>: because payroll data is High-impact, the system inherits the largest control baseline. Miscategorize it as Moderate and you under-protect it; the whole framework hinges on that early judgment.</p></div>`,
+    lab:{ kind:'order', id:'01.2',
+      title:'Put the RMF steps in order',
+      objective:'Arrange the seven RMF steps into the correct sequence. Order matters: you cannot select controls before you have categorized the system, and you cannot authorize before you assess.',
+      intro:'The steps below are shuffled. Use the ▲▼ controls to order them, then check.',
+      correct:['Prepare','Categorize','Select','Implement','Assess','Authorize','Monitor'],
+      scrambled:['Assess','Prepare','Authorize','Select','Monitor','Categorize','Implement']},
+    quiz:[
+      {q:'What is the deliverable of the Authorize step?',
+       o:['A penetration test report','An Authorization to Operate (ATO) — a risk acceptance decision','A control baseline','A FIPS 199 categorization'],a:1,
+       e:'A senior official (the Authorizing Official) reviews residual risk and grants the ATO, formally accepting the risk of operating the system.'},
+      {q:'Which step determines the size of the control baseline you select?',
+       o:['Monitor','Categorize','Implement','Prepare'],a:1,
+       e:'Categorize sets the system impact level (low/moderate/high), which drives the SP 800-53 baseline selected in the next step.'},
+      {q:'A system receives an ATO but still has open findings. How is that possible?',
+       o:['It is not possible — ATO requires zero findings','Known weaknesses are documented in a POA&M and the residual risk is accepted','The findings are deleted','The ATO is automatically revoked'],a:1,
+       e:'ATO is a risk-based decision. Documented, tracked weaknesses (in a POA&M) can be accepted by the Authorizing Official.'}
+    ]},
+
+  { id:'01.3', num:'01.3', title:'NIST SP 800-53', minutes:7,
+    dek:'The exhaustive control catalog behind the RMF — over a thousand controls organized into 20 families, the raw material of federal security.',
+    concept:`<p><b>SP 800-53</b> ("Security and Privacy Controls for Information Systems and Organizations") is the giant <b>catalog of controls</b> that the RMF's Select step draws from. If the RMF is the process, 800-53 is the parts bin — currently <b>Revision 5</b>, with over a thousand controls and control enhancements.</p>
+    <div class="keyterm"><div class="kt-label">Core definition</div><div class="kt-term">SP 800-53</div>A comprehensive catalog of security and privacy controls, grouped into 20 families (e.g., Access Control, Incident Response), from which organizations select tailored baselines based on system impact.</div>
+    <h3>Control families</h3>
+    <p>Controls are grouped into <b>20 families</b>, each with a two-letter identifier. A control reads like <code>AC-2</code> (Account Management) inside the <b>AC (Access Control)</b> family. A sample of families:</p>
+    <ul>
+      <li><b>AC</b> — Access Control</li>
+      <li><b>AU</b> — Audit and Accountability</li>
+      <li><b>IR</b> — Incident Response</li>
+      <li><b>CM</b> — Configuration Management</li>
+      <li><b>RA</b> — Risk Assessment</li>
+      <li><b>SC</b> — System and Communications Protection</li>
+    </ul>
+    <h3>Baselines and tailoring</h3>
+    <p>You don't implement all 1,000+ controls. Based on the FIPS 199 categorization (low/moderate/high), you start from a <b>baseline</b> and then <b>tailor</b> it — removing controls that don't apply, adding overlays (e.g., privacy, cloud) that do.</p>
+    <div class="callout tip"><span class="ic">💡</span><div>The control numbering is a vocabulary worth learning. When an auditor says "your <code>AU-2</code> evidence is thin," they mean your <i>audit logging</i> coverage. Knowing the family codes lets you navigate any federal security conversation.</div></div>`,
+    example:`<p>Here is the anatomy of one control as it appears in the catalog, and how it gets tailored for a real system.</p>
+    <div class="example-wrap"><div class="example-label">Worked example · reading control AC-2</div>
+    <div class="console"><div class="console-bar"><div class="dots"><i style="background:#f87171"></i><i style="background:#fbbf24"></i><i style="background:#34d399"></i></div><div class="title">800-53-control.txt</div><div class="chip">REV 5</div></div>
+    <div class="console-body"><div class="mono-out">family   : <span style="color:#34d399">AC — Access Control</span>
+control  : AC-2  Account Management
+baseline : LOW ✓   MODERATE ✓   HIGH ✓
+enhancements (added at higher baselines):
+  AC-2(1) automated account management   <span style="color:#5c6b80"># MOD+</span>
+  AC-2(3) disable inactive accounts       <span style="color:#5c6b80"># MOD+</span>
+  AC-2(12) account monitoring for atypical use <span style="color:#5c6b80"># HIGH</span>
+tailoring decision:
+  system is MODERATE → AC-2 + (1) + (3) apply
+  AC-2(12) is HIGH-only → <span style="color:#f87171">excluded</span></div></div></div>
+    <p>The base control (<code>AC-2</code>) appears at every level, but its <b>enhancements</b> switch on as impact rises. Tailoring is the engineer's judgment about which of those enhancements your system actually needs.</p></div>`,
+    lab:{ kind:'match', id:'01.3',
+      title:'Match controls to their families',
+      objective:'Match each SP 800-53 control to the correct family. Reading control IDs fluently is the difference between navigating the catalog and drowning in it.',
+      intro:'Match each control on the left to its family. All correct completes the lab.',
+      pairs:[
+        {l:'AC-2 Account Management',r:'Access Control'},
+        {l:'IR-4 Incident Handling',r:'Incident Response'},
+        {l:'AU-6 Audit Record Review',r:'Audit and Accountability'},
+        {l:'RA-5 Vulnerability Scanning',r:'Risk Assessment'}
+      ]},
+    quiz:[
+      {q:'What is the relationship between the RMF and SP 800-53?',
+       o:['They are unrelated','SP 800-53 is the control catalog the RMF Select step draws from','SP 800-53 replaced the RMF','The RMF is a subset of SP 800-53'],a:1,
+       e:'The RMF is the process; SP 800-53 is the catalog of controls that the Select step pulls a tailored baseline from.'},
+      {q:'In the control ID "IR-4", what does "IR" indicate?',
+       o:['The impact rating','The Incident Response family','Revision 4','Internal Review'],a:1,
+       e:'The two-letter prefix is the control family — IR is Incident Response. The number identifies the specific control within it.'},
+      {q:'What does "tailoring" a baseline mean?',
+       o:['Writing controls from scratch','Adjusting the starting baseline by removing inapplicable controls and adding overlays','Ignoring the catalog entirely','Lowering the system impact level'],a:1,
+       e:'Tailoring adapts the impact-based baseline to the specific system — dropping N/A controls and layering on overlays such as privacy or cloud.'}
+    ]},
+
+  { id:'01.4', num:'01.4', title:'NIST SP 800-171 & CUI', minutes:7,
+    dek:'How the government protects its sensitive-but-unclassified data once it leaves federal systems and lands on a contractor\'s network.',
+    concept:`<p><b>SP 800-171</b> answers a narrower question than 800-53: how do <i>non-federal</i> organizations — defense contractors, universities, suppliers — protect <b>Controlled Unclassified Information (CUI)</b> on their own systems?</p>
+    <div class="keyterm"><div class="kt-label">Core definition</div><div class="kt-term">SP 800-171</div>A set of security requirements for protecting Controlled Unclassified Information (CUI) when it resides on non-federal (e.g., contractor) systems.</div>
+    <div class="keyterm"><div class="kt-label">Key term</div><div class="kt-term">CUI</div>Information the government creates or possesses that is sensitive but not classified — and that laws or policies require be safeguarded (e.g., technical drawings, certain research, PII handled for an agency).</div>
+    <h3>How it relates to 800-53</h3>
+    <p>800-171's requirements are a <b>distilled subset</b> of 800-53, reorganized into requirement families and written for organizations that aren't running a full federal RMF program. It is the backbone of the U.S. defense industrial base's security obligations, and it feeds directly into <b>CMMC</b> (covered later in Governance).</p>
+    <div class="analogy"><div class="al">Think of it like</div>A library lending a rare manuscript to a researcher. Inside the library (federal systems), 800-53 governs. The moment the manuscript leaves with the researcher (a contractor), 800-171 is the contract clause that says "here's exactly how you must store, handle, and return it."</div>
+    <div class="callout real"><span class="ic">🛰️</span><div><b>From the field:</b> If you work for any company that sells to the U.S. Department of Defense, 800-171 compliance is likely written into your contracts via the DFARS clause. Falling short can cost the contract — which is why CMMC assessments now verify it.</div></div>`,
+    example:`<p>See how a single 800-53 idea is compressed into an 800-171 requirement a contractor must meet.</p>
+    <div class="example-wrap"><div class="example-label">Worked example · 800-53 → 800-171 distillation</div>
+    <div class="console"><div class="console-bar"><div class="dots"><i style="background:#f87171"></i><i style="background:#fbbf24"></i><i style="background:#34d399"></i></div><div class="title">cui-protection.txt</div></div>
+    <div class="console-body"><div class="mono-out">data         : turbine blade CAD files for a DoD contract
+classification: <span style="color:#34d399">CUI</span> (not classified, but controlled)
+where it lives: contractor's engineering workstations
+
+800-171 requirement family : ACCESS CONTROL (3.1)
+  3.1.1 limit access to authorized users        <span style="color:#34d399">✓</span>
+  3.1.5 employ least privilege                   <span style="color:#34d399">✓</span>
+  3.1.20 control connections to external systems <span style="color:#f87171">gap</span>
+
+result: gap logged → remediation plan required
+        (assessed under CMMC for DoD work)</div></div></div>
+    <p>The contractor doesn't run the full RMF; they meet the focused 800-171 requirement set. Each unmet requirement is a gap that must be planned and closed before it threatens the contract.</p></div>`,
+    lab:{ kind:'classify', id:'01.4',
+      title:'Is it CUI?',
+      objective:'Decide whether each data type is likely <b>CUI</b> (controlled but unclassified) or <b>Not CUI</b>. Knowing what triggers 800-171 is the first step to scoping a compliance program.',
+      intro:'Five data types. Classify each. All correct completes the lab.',
+      threeway:['CUI','Not CUI'],
+      items:[
+        {t:'Engineering drawings for a military vehicle component, marked controlled.',layer:'CUI'},
+        {t:'The company\'s public marketing brochure.',layer:'Not CUI'},
+        {t:'Export-controlled technical research performed under a federal contract.',layer:'CUI'},
+        {t:'A press release already published on the company website.',layer:'Not CUI'},
+        {t:'Personally identifiable information processed on behalf of a federal agency.',layer:'CUI'}
+      ]},
+    quiz:[
+      {q:'SP 800-171 applies primarily to:',
+       o:['Classified information on federal systems','CUI residing on non-federal (e.g., contractor) systems','Consumer credit card data','EU citizen personal data'],a:1,
+       e:'800-171 exists to protect Controlled Unclassified Information when it lives outside federal systems, typically on contractor networks.'},
+      {q:'How does 800-171 relate to 800-53?',
+       o:['It is an unrelated standard','It is a distilled subset tailored for non-federal organizations','It supersedes 800-53','It is the EU equivalent'],a:1,
+       e:'800-171 takes a focused subset of 800-53 controls and reorganizes them into requirements suited to organizations not running a full federal program.'},
+      {q:'Which U.S. program verifies 800-171 compliance for defense contractors?',
+       o:['FedRAMP','CMMC','PCI DSS','HIPAA'],a:1,
+       e:'The Cybersecurity Maturity Model Certification (CMMC) assesses defense contractors largely against 800-171 requirements.'}
+    ]},
+
+  { id:'01.5', num:'01.5', title:'The ISO/IEC 27000 family', minutes:8,
+    dek:'The international counterpart to NIST: 27001 certifies a management system, 27002 details the controls, 27005 governs risk.',
+    concept:`<p>Outside the U.S. federal world, the dominant standard is the <b>ISO/IEC 27000 family</b> — international standards published jointly by ISO and IEC. Unlike NIST documents (free, U.S.-centric), ISO standards are paid, globally recognized, and <b>certifiable</b>: an accredited body can audit you and issue a certificate.</p>
+    <div class="keyterm"><div class="kt-label">Standard 1</div><div class="kt-term">ISO/IEC 27001</div>The certifiable standard. It specifies the requirements for an <b>Information Security Management System (ISMS)</b> — the governance system for managing security risk. You get certified against 27001.</div>
+    <div class="keyterm"><div class="kt-label">Standard 2</div><div class="kt-term">ISO/IEC 27002</div>The guidance companion. It describes the actual security <b>controls</b> in detail (the 2022 edition has 93 controls in 4 themes). You implement 27002 controls; you certify against 27001.</div>
+    <div class="keyterm"><div class="kt-label">Standard 3</div><div class="kt-term">ISO/IEC 27005</div>Guidance specifically for <b>information security risk management</b> — how to identify, analyze, evaluate, and treat risk within the ISMS.</div>
+    <h3>The ISMS mindset</h3>
+    <p>The heart of 27001 is the <b>ISMS</b>: not a tool, but a management system — policies, processes, roles, and a cycle of continual improvement (Plan-Do-Check-Act). Certification proves you <i>manage</i> security systematically, not that any single control is perfect.</p>
+    <div class="analogy"><div class="al">Think of it like</div>A restaurant's food-safety certification. The certificate on the wall (27001) doesn't mean every dish is flawless — it means there's a <i>system</i>: documented procedures, trained staff, temperature logs, and regular inspections (27002 is the detailed hygiene rules; 27005 is how they assess the risk of each dish).</div>
+    <div class="callout tip"><span class="ic">💡</span><div>Quick memory hook: <b>27001 = certify</b> (the management system), <b>27002 = controls</b> (the how-to), <b>27005 = risk</b>. Mixing up 27001 and 27002 is the most common ISO confusion in interviews.</div></div>`,
+    example:`<p>See the division of labor between the three standards on one finding.</p>
+    <div class="example-wrap"><div class="example-label">Worked example · who owns what</div>
+    <div class="console"><div class="console-bar"><div class="dots"><i style="background:#f87171"></i><i style="background:#fbbf24"></i><i style="background:#34d399"></i></div><div class="title">isms-audit.log</div><div class="chip">ISO 27001</div></div>
+    <div class="console-body"><div class="mono-out">scenario: laptops are not encrypted
+
+<span style="color:#34d399">27005</span> RISK: lost laptop → CUI disclosure
+        likelihood: med  impact: high  → treat
+<span style="color:#34d399">27002</span> CONTROL: A.8.24 use of cryptography
+        implement full-disk encryption on all laptops
+<span style="color:#34d399">27001</span> ISMS: document the decision in the Statement of
+        Applicability; auditor checks the system worked
+        → if the management system is sound: <span style="color:#34d399">CERTIFIED</span></div></div></div>
+    <p>27005 framed the risk, 27002 named the control, and 27001 is the management system the auditor certifies. The certificate attests to the <i>system</i>, evidenced by how it handled this exact finding.</p></div>`,
+    lab:{ kind:'match', id:'01.5',
+      title:'Match the ISO standard to its job',
+      objective:'Match each ISO/IEC 27000 standard to what it actually does. Getting 27001 vs. 27002 straight is essential ISO literacy.',
+      intro:'Match each standard to its role. All correct completes the lab.',
+      pairs:[
+        {l:'ISO/IEC 27001',r:'Certifiable ISMS requirements'},
+        {l:'ISO/IEC 27002',r:'Detailed catalog of security controls'},
+        {l:'ISO/IEC 27005',r:'Information security risk management guidance'},
+        {l:'Statement of Applicability',r:'Document of which controls apply and why'}
+      ]},
+    quiz:[
+      {q:'You can be formally certified against which ISO standard?',
+       o:['27002','27005','27001','All of them equally'],a:2,
+       e:'Certification is against 27001 (the ISMS). 27002 and 27005 are guidance documents you cannot certify against directly.'},
+      {q:'What is an ISMS?',
+       o:['A firewall appliance','An Information Security Management System — the governance system for managing security','A type of encryption','An incident database'],a:1,
+       e:'The ISMS is the set of policies, processes, roles, and continual-improvement cycle that systematically manages information security risk.'},
+      {q:'Which standard would you consult for the detailed wording of a specific control?',
+       o:['27001','27002','27005','None'],a:1,
+       e:'27002 is the guidance companion describing the controls in detail; 27001 references them but 27002 explains the how.'}
+    ]},
+
+  { id:'01.6', num:'01.6', title:'FAIR — quantitative risk', minutes:7,
+    dek:'Most frameworks rate risk "High/Medium/Low." FAIR puts a dollar figure and a probability on it — turning risk into a number executives can act on.',
+    concept:`<p>Every framework so far treats risk <b>qualitatively</b> — red/amber/green, high/moderate/low. <b>FAIR (Factor Analysis of Information Risk)</b> is different: it is a <b>quantitative</b> model that expresses risk in <i>financial terms and probabilities</i>.</p>
+    <div class="keyterm"><div class="kt-label">Core definition</div><div class="kt-term">FAIR</div>An open, quantitative risk-analysis model that defines risk as the probable frequency and probable magnitude of future loss — expressed in money, not color codes.</div>
+    <h3>The core decomposition</h3>
+    <p>FAIR breaks <b>Risk</b> into two factors, then breaks those down further:</p>
+    <ul>
+      <li><b>Loss Event Frequency</b> — how often a loss is likely to occur (from Threat Event Frequency × Vulnerability).</li>
+      <li><b>Loss Magnitude</b> — how much it costs when it does (primary loss + secondary loss).</li>
+    </ul>
+    <p>Multiply distributions of those together and you get a <b>range of probable annualized loss</b> — e.g., "we expect $1.2M in losses from this scenario per year, with a 90% chance it falls between $400K and $3M."</p>
+    <div class="analogy"><div class="al">Think of it like</div>How an insurance company prices a policy. They don't say "house fire risk is High." They estimate how often fires happen (frequency) and how much each costs (magnitude), then set a premium. FAIR brings that actuarial discipline to cyber risk.</div>
+    <div class="callout warn"><span class="ic">⚠️</span><div>FAIR is powerful but only as good as its inputs. Garbage estimates of frequency and magnitude produce confident-looking but meaningless dollar figures. Its real value is <i>forcing explicit assumptions</i> and enabling apples-to-apples comparison between risks.</div></div>`,
+    example:`<p>Here's a FAIR analysis of one scenario, decomposed and rolled up to a loss figure.</p>
+    <div class="example-wrap"><div class="example-label">Worked example · quantifying a phishing risk</div>
+    <div class="console"><div class="console-bar"><div class="dots"><i style="background:#f87171"></i><i style="background:#fbbf24"></i><i style="background:#34d399"></i></div><div class="title">fair-analysis.calc</div><div class="chip">QUANTITATIVE</div></div>
+    <div class="console-body"><div class="mono-out">scenario: BEC phishing leads to fraudulent wire
+
+LOSS EVENT FREQUENCY
+  threat event frequency : 12 attempts / year
+  vulnerability          : 5% succeed
+  → loss event frequency : <span style="color:#34d399">0.6 events / year</span>
+
+LOSS MAGNITUDE (per event)
+  primary loss (wire)    : $250,000
+  secondary (response)   : $50,000
+  → magnitude            : <span style="color:#34d399">$300,000 / event</span>
+
+ANNUALIZED RISK
+  0.6 × $300,000 = <span style="color:#fbbf24">$180,000 / year (expected)</span>
+  → now comparable to the cost of controls</div></div></div>
+    <p>That single number — <b>$180K/year</b> — lets you weigh a $40K email-security control as obviously worth it, and compare this risk directly against an unrelated one measured the same way. That comparability is FAIR's superpower.</p></div>`,
+    lab:{ kind:'order', id:'01.6',
+      title:'Build the FAIR calculation',
+      objective:'Order the steps of a FAIR analysis from raw factors to an annualized loss figure. Understanding the decomposition is the whole point of the model.',
+      intro:'Arrange the FAIR steps from inputs to final risk figure, then check.',
+      correct:['Estimate threat event frequency','Estimate vulnerability (% that succeed)','Derive loss event frequency','Estimate loss magnitude per event','Compute annualized loss exposure'],
+      scrambled:['Estimate loss magnitude per event','Derive loss event frequency','Compute annualized loss exposure','Estimate threat event frequency','Estimate vulnerability (% that succeed)']},
+    quiz:[
+      {q:'How does FAIR express risk?',
+       o:['As High/Medium/Low ratings','As probable frequency and magnitude of loss, in financial terms','As a control maturity tier','As a compliance pass/fail'],a:1,
+       e:'FAIR is quantitative: it produces probabilities and dollar ranges of loss rather than qualitative color codes.'},
+      {q:'The two top-level factors FAIR decomposes risk into are:',
+       o:['Threats and vulnerabilities','Loss Event Frequency and Loss Magnitude','Likelihood and severity tiers','Confidentiality and integrity'],a:1,
+       e:'FAIR splits risk into how often a loss occurs (Loss Event Frequency) and how costly it is (Loss Magnitude).'},
+      {q:'What is the main caveat when using FAIR?',
+       o:['It only works for physical security','Its output is only as good as the estimated inputs','It cannot compare risks','It is illegal in the EU'],a:1,
+       e:'FAIR\'s dollar figures look precise but depend entirely on the quality of frequency and magnitude estimates; its value is in forcing explicit, comparable assumptions.'}
+    ]}
+  ]},
+/* ============================ MODULE 02 ============================ */
+{ id:'M02', num:'02', title:'Controls & Best Practices', sub:'4 lessons · the playbook',
+  blurb:'The prescriptive, hands-on side: CIS Controls and Benchmarks for concrete hardening, OWASP for application security, and MITRE ATT&CK plus the Cyber Kill Chain for understanding the adversary.',
+  lessons:[
+
+  { id:'02.1', num:'02.1', title:'CIS Controls & Benchmarks', minutes:8,
+    dek:'Where frameworks say "manage your assets," CIS says "here are the exact 18 things to do, in priority order, and here is how to configure each system."',
+    concept:`<p>The <b>CIS Critical Security Controls</b> (currently <b>v8.1</b>), from the Center for Internet Security, are a prioritized, prescriptive set of defensive actions. Where NIST CSF tells you <i>what outcomes</i> to achieve, CIS tells you <i>exactly what to do</i> — and in what order.</p>
+    <div class="keyterm"><div class="kt-label">Core definition</div><div class="kt-term">CIS Critical Security Controls</div>A prioritized set of 18 controls (each broken into specific Safeguards) representing the most effective defensive actions, ordered so that doing the first few blocks the majority of common attacks.</div>
+    <h3>18 Controls, organized by priority</h3>
+    <p>The first controls are deliberately the highest-impact. CIS Control 1 and 2 are <b>asset and software inventory</b> — because you cannot protect what you don't know you have. They run through access control, data protection, logging, incident response, and penetration testing.</p>
+    <h3>Implementation Groups (IG1–IG3)</h3>
+    <p>CIS scales by organization size and risk via <b>Implementation Groups</b>: <b>IG1</b> is essential cyber hygiene for small organizations; <b>IG2</b> and <b>IG3</b> add Safeguards for larger or higher-risk enterprises. IG1 is now often cited as the baseline definition of "reasonable" security.</p>
+    <div class="keyterm"><div class="kt-label">Companion</div><div class="kt-term">CIS Benchmarks</div>Separate, deeply detailed configuration guides for specific technologies (Windows Server, Ubuntu, AWS, Apache). They tell you the exact setting values to harden a given system.</div>
+    <div class="analogy"><div class="al">Think of it like</div>A doctor's advice. A framework says "stay healthy." The CIS Controls are the prioritized checklist — "first, sleep and eat well; then exercise; then advanced stuff." The CIS Benchmarks are the precise prescriptions — exact dosages and settings for each specific condition.</div>`,
+    example:`<p>See the difference between a Control (what to do) and a Benchmark (the exact setting).</p>
+    <div class="example-wrap"><div class="example-label">Worked example · Control vs. Benchmark</div>
+    <div class="console"><div class="console-bar"><div class="dots"><i style="background:#f87171"></i><i style="background:#fbbf24"></i><i style="background:#34d399"></i></div><div class="title">cis-hardening.txt</div><div class="chip">CIS v8.1</div></div>
+    <div class="console-body"><div class="mono-out"><span style="color:#34d399">CIS CONTROL 5</span> — Account Management
+  Safeguard 5.2: use unique, strong passwords
+  Safeguard 5.3: disable dormant accounts
+  (the "what" — applies to every system)
+
+<span style="color:#34d399">CIS BENCHMARK</span> — Windows Server 2022
+  1.1.1 'Enforce password history' = 24 passwords
+  1.1.2 'Maximum password age'      = 365 days
+  1.1.4 'Minimum password length'   = 14 chars
+  (the "exact setting" — for this specific OS)</div></div></div>
+    <p>The Control sets the objective; the Benchmark gives you the literal value to type into the policy editor. Together they take you from intent to a hardened machine with no guesswork.</p></div>`,
+    lab:{ kind:'classify', id:'02.1',
+      title:'Control or Benchmark?',
+      objective:'Decide whether each item is a CIS <b>Control/Safeguard</b> (the general action) or a CIS <b>Benchmark</b> (a system-specific configuration value).',
+      intro:'Five items. Classify each. All correct completes the lab.',
+      threeway:['Control','Benchmark'],
+      items:[
+        {t:'"Maintain an inventory of all enterprise assets."',layer:'Control'},
+        {t:'"Set \'Minimum password length\' to 14 characters on Windows Server 2022."',layer:'Benchmark'},
+        {t:'"Establish and maintain a secure configuration process."',layer:'Control'},
+        {t:'"Disable the S3 bucket public-access setting in AWS."',layer:'Benchmark'},
+        {t:'"Implement and manage a firewall on servers."',layer:'Control'}
+      ]},
+    quiz:[
+      {q:'Why are CIS Controls 1 and 2 (asset and software inventory) placed first?',
+       o:['Alphabetical order','You cannot protect assets you do not know exist','They are the cheapest','Regulators require it'],a:1,
+       e:'Inventory is foundational — visibility into what you have is a prerequisite for every other defensive action, so CIS prioritizes it first.'},
+      {q:'What does Implementation Group 1 (IG1) represent?',
+       o:['The most advanced controls for nation-state defense','Essential cyber hygiene; a baseline for smaller organizations','A certification level','A type of penetration test'],a:1,
+       e:'IG1 is the essential-hygiene tier, increasingly treated as the floor for "reasonable" security; IG2 and IG3 add safeguards for larger/higher-risk orgs.'},
+      {q:'A CIS Benchmark differs from a CIS Control because it:',
+       o:['Is less detailed','Gives exact configuration values for a specific technology','Applies only to networks','Is not maintained by CIS'],a:1,
+       e:'Benchmarks are technology-specific hardening guides with precise setting values; Controls are the general prioritized actions.'}
+    ]},
+
+  { id:'02.2', num:'02.2', title:'OWASP — application security', minutes:8,
+    dek:'The reference point for securing software. The Top 10 names the most critical web app risks; ASVS and SAMM turn that awareness into a verifiable program.',
+    concept:`<p>Frameworks like NIST and ISO mostly operate at the organizational level. <b>OWASP (the Open Worldwide Application Security Project)</b> zooms into the <b>software</b> itself — the vulnerabilities in the code and how to prevent them. It's an open community producing free, vendor-neutral resources.</p>
+    <div class="keyterm"><div class="kt-label">Flagship</div><div class="kt-term">OWASP Top 10</div>An awareness document ranking the ten most critical web application security risks (e.g., Broken Access Control, Injection, Cryptographic Failures). Updated periodically; the most-cited security list in software.</div>
+    <h3>Beyond the Top 10</h3>
+    <p>The Top 10 is awareness, not a standard. Two other OWASP projects make application security <i>verifiable</i>:</p>
+    <ul>
+      <li><b>ASVS (Application Security Verification Standard)</b> — a detailed, testable list of security requirements at three levels of rigor. You verify an app <i>against</i> ASVS.</li>
+      <li><b>SAMM (Software Assurance Maturity Model)</b> — a model for measuring and improving the maturity of your whole software-security <i>program</i>, from governance to operations.</li>
+    </ul>
+    <div class="analogy"><div class="al">Think of it like</div>Building safety. The <b>Top 10</b> is the poster of the most common causes of building collapse — awareness. <b>ASVS</b> is the detailed inspection checklist you verify a specific building against. <b>SAMM</b> measures how mature the construction <i>company's</i> safety practices are overall.</div>
+    <div class="callout real"><span class="ic">🛰️</span><div><b>From the field:</b> "Broken Access Control" has topped the recent Top 10 — the same authorization failures from any IAM discussion, now in code. A user changing <code>/account?id=123</code> to <code>id=124</code> and seeing someone else's data is the canonical example.</div></div>`,
+    example:`<p>Here is one Top 10 category shown as the vulnerability and its fix.</p>
+    <div class="example-wrap"><div class="example-label">Worked example · A01 Broken Access Control</div>
+    <div class="console"><div class="console-bar"><div class="dots"><i style="background:#f87171"></i><i style="background:#fbbf24"></i><i style="background:#34d399"></i></div><div class="title">owasp-a01.log</div><div class="chip">OWASP TOP 10</div></div>
+    <div class="console-body"><div class="mono-out"><span style="color:#f87171">VULNERABLE</span>
+  GET /api/invoices/4821     (logged in as user A)
+  server returns the invoice WITHOUT checking
+  that invoice 4821 belongs to user A
+  → user A edits URL to 4822 → sees user B's data
+  category: <span style="color:#34d399">A01:2021 Broken Access Control</span>
+
+<span style="color:#34d399">FIXED</span>
+  server checks: invoice.owner == session.user
+  if mismatch → 403 Forbidden
+  + deny-by-default authorization on every endpoint</div></div></div>
+    <p>The fix is an <b>authorization check on every request</b>, server-side, denying by default. OWASP's value is naming this pattern so teams recognize and prevent it consistently rather than rediscovering it after a breach.</p></div>`,
+    lab:{ kind:'match', id:'02.2',
+      title:'Match the OWASP resource to its purpose',
+      objective:'Match each OWASP project to what it is for. Knowing which resource solves which problem is how you actually apply OWASP in a program.',
+      intro:'Match each project to its role. All correct completes the lab.',
+      pairs:[
+        {l:'OWASP Top 10',r:'Awareness of the most critical web risks'},
+        {l:'OWASP ASVS',r:'Testable verification requirements for an app'},
+        {l:'OWASP SAMM',r:'Maturity model for a software-security program'},
+        {l:'Broken Access Control',r:'A recent #1 Top 10 risk category'}
+      ]},
+    quiz:[
+      {q:'The OWASP Top 10 is best described as:',
+       o:['A certifiable standard','An awareness document of the most critical web app risks','A penetration testing tool','A compliance law'],a:1,
+       e:'The Top 10 raises awareness of common, critical risks. For verifiable requirements you use ASVS; it is not itself a standard you certify against.'},
+      {q:'If you want a testable list of security requirements to verify an application against, you use:',
+       o:['The Top 10','ASVS','SAMM','FAIR'],a:1,
+       e:'The Application Security Verification Standard (ASVS) provides leveled, testable requirements for verifying an application\'s security.'},
+      {q:'SAMM measures the maturity of:',
+       o:['A single line of code','An organization\'s overall software-security program','A firewall ruleset','A network segment'],a:1,
+       e:'The Software Assurance Maturity Model assesses and helps improve the maturity of the whole software-security program.'}
+    ]},
+
+  { id:'02.3', num:'02.3', title:'MITRE ATT&CK', minutes:8,
+    dek:'A giant, curated knowledge base of exactly how real adversaries behave — the tactics, techniques, and procedures defenders use to map detections and find gaps.',
+    concept:`<p><b>MITRE ATT&CK</b> (Adversarial Tactics, Techniques, and Common Knowledge) is a free, continuously updated <b>knowledge base of real-world adversary behavior</b>, observed in actual intrusions and organized into a navigable matrix.</p>
+    <div class="keyterm"><div class="kt-label">Core definition</div><div class="kt-term">MITRE ATT&CK</div>A curated matrix of the tactics (the adversary's goals) and techniques (how they achieve them) seen in real attacks, used by defenders to map coverage, build detections, and emulate threats.</div>
+    <h3>Tactics and Techniques</h3>
+    <ul>
+      <li><b>Tactics</b> are the adversary's objectives — the columns of the matrix. Examples: Initial Access, Persistence, Privilege Escalation, Lateral Movement, Exfiltration.</li>
+      <li><b>Techniques</b> are <i>how</i> they accomplish a tactic — the cells. E.g., under Initial Access: Phishing (T1566). Many techniques have sub-techniques.</li>
+      <li><b>Procedures</b> are the specific, observed implementations a given threat group uses.</li>
+    </ul>
+    <h3>How defenders use it</h3>
+    <p>ATT&CK turns abstract "we got hacked" into precise, shared vocabulary. Teams map their detections onto the matrix to see <b>coverage gaps</b> (a "heat map"), threat hunters look for specific techniques, and red teams emulate known groups.</p>
+    <div class="analogy"><div class="al">Think of it like</div>A catalog of every move a burglar might use — pick the lock, climb the fire escape, tailgate through the lobby — organized by goal (get in, move around, take the loot). You can't guard everything equally, but the catalog lets you see which moves you'd detect and which you'd miss entirely.</div>
+    <div class="callout warn"><span class="ic">⚠️</span><div>Don't confuse ATT&CK with the Cyber Kill Chain (next lesson). The Kill Chain is a simple <i>linear</i> 7-stage model; ATT&CK is a far more granular, non-linear <i>matrix</i> of hundreds of techniques. They complement each other.</div></div>`,
+    example:`<p>Here is one intrusion described entirely in ATT&CK terms — the shared language in action.</p>
+    <div class="example-wrap"><div class="example-label">Worked example · an intrusion in ATT&CK terms</div>
+    <div class="console"><div class="console-bar"><div class="dots"><i style="background:#f87171"></i><i style="background:#fbbf24"></i><i style="background:#34d399"></i></div><div class="title">attack-mapping.log</div><div class="chip">MITRE ATT&CK</div></div>
+    <div class="console-body"><div class="mono-out">tactic                technique
+---------------------------------------------------------
+<span style="color:#34d399">Initial Access</span>        Phishing: Spearphishing Link (T1566.002)
+<span style="color:#34d399">Execution</span>             User Execution: Malicious File (T1204.002)
+<span style="color:#34d399">Persistence</span>           Registry Run Keys (T1547.001)
+<span style="color:#34d399">Privilege Escalation</span>  Valid Accounts (T1078)
+<span style="color:#34d399">Lateral Movement</span>      Remote Services: RDP (T1021.001)
+<span style="color:#34d399">Exfiltration</span>          Exfil Over C2 Channel (T1041)
+
+detection coverage: <span style="color:#34d399">4 / 6 techniques</span> have alerts
+gap: T1547.001 and T1078 → <span style="color:#f87171">no detection</span></div></div></div>
+    <p>Mapping the intrusion reveals a concrete, prioritized to-do list: build detections for the two uncovered techniques. That gap analysis is ATT&CK's most practical payoff.</p></div>`,
+    lab:{ kind:'classify', id:'02.3',
+      title:'Tactic or Technique?',
+      objective:'Distinguish ATT&CK <b>Tactics</b> (the adversary\'s goal) from <b>Techniques</b> (how they achieve it). This is the fundamental structure of the matrix.',
+      intro:'Five items. Classify each as a Tactic or a Technique. All correct completes the lab.',
+      threeway:['Tactic','Technique'],
+      items:[
+        {t:'Initial Access',layer:'Tactic'},
+        {t:'Spearphishing Link',layer:'Technique'},
+        {t:'Lateral Movement',layer:'Tactic'},
+        {t:'Registry Run Keys for persistence',layer:'Technique'},
+        {t:'Exfiltration',layer:'Tactic'}
+      ]},
+    quiz:[
+      {q:'In ATT&CK, a "Tactic" represents:',
+       o:['A specific tool','The adversary\'s objective (the "why")','A patch','A compliance control'],a:1,
+       e:'Tactics are the adversary\'s goals (e.g., Persistence, Exfiltration) — the columns of the matrix. Techniques are the "how".'},
+      {q:'A primary defensive use of ATT&CK is:',
+       o:['Encrypting data at rest','Mapping detection coverage to find gaps','Writing privacy policies','Calculating annualized loss'],a:1,
+       e:'Teams map their detections onto the matrix to visualize coverage and prioritize building detections for uncovered techniques.'},
+      {q:'How does ATT&CK differ from the Cyber Kill Chain?',
+       o:['They are identical','ATT&CK is a granular, non-linear matrix; the Kill Chain is a simple linear model','ATT&CK is older','The Kill Chain has more techniques'],a:1,
+       e:'The Kill Chain is a 7-stage linear model; ATT&CK is a far more detailed, non-linear matrix of hundreds of techniques. They complement each other.'}
+    ]},
+
+  { id:'02.4', num:'02.4', title:'The Cyber Kill Chain', minutes:6,
+    dek:'Lockheed Martin\'s elegant 7-stage model of an intrusion — the mental model that frames defense as "break the chain at any link."',
+    concept:`<p>The <b>Cyber Kill Chain</b>, developed by Lockheed Martin, models a targeted intrusion as a <b>linear sequence of seven stages</b>. Its enduring insight: an attacker must complete <i>every</i> stage to succeed, so a defender who disrupts <i>any one</i> stage breaks the chain and stops the attack.</p>
+    <div class="keyterm"><div class="kt-label">Core definition</div><div class="kt-term">Cyber Kill Chain</div>A seven-stage model of a cyber intrusion — Reconnaissance, Weaponization, Delivery, Exploitation, Installation, Command &amp; Control, Actions on Objectives — used to frame detection and disruption at each stage.</div>
+    <h3>The seven stages</h3>
+    <ol>
+      <li><b>Reconnaissance</b> — research the target.</li>
+      <li><b>Weaponization</b> — build the malware/exploit payload.</li>
+      <li><b>Delivery</b> — send it (email, USB, web).</li>
+      <li><b>Exploitation</b> — trigger the vulnerability.</li>
+      <li><b>Installation</b> — establish a foothold (malware installed).</li>
+      <li><b>Command &amp; Control (C2)</b> — remote channel back to the attacker.</li>
+      <li><b>Actions on Objectives</b> — steal, encrypt, destroy.</li>
+    </ol>
+    <div class="analogy"><div class="al">Think of it like</div>A heist movie. Case the joint (recon), build the tools (weaponize), get inside (delivery/exploitation), set up a hideout (installation), stay in radio contact (C2), then crack the safe (actions). Stop them at <i>any</i> step — a guard at the door, a jammed radio — and the heist fails.</div>
+    <div class="callout tip"><span class="ic">💡</span><div>The Kill Chain's strength is its simplicity for <i>communication and strategy</i>: "we have strong Delivery controls (email filtering) but weak C2 detection." For granular technical detail, defenders pair it with MITRE ATT&CK.</div></div>`,
+    example:`<p>One phishing-led ransomware case, mapped to the chain, showing where each control would break it.</p>
+    <div class="example-wrap"><div class="example-label">Worked example · breaking the chain</div>
+    <div class="console"><div class="console-bar"><div class="dots"><i style="background:#f87171"></i><i style="background:#fbbf24"></i><i style="background:#34d399"></i></div><div class="title">kill-chain.map</div></div>
+    <div class="console-body"><div class="mono-out">stage                 control that breaks it here
+----------------------------------------------------------
+Reconnaissance        limit public employee info
+Weaponization         (attacker side — hard to disrupt)
+Delivery              <span style="color:#34d399">email filtering / attachment sandbox</span>
+Exploitation          patching / EDR exploit protection
+Installation          <span style="color:#34d399">application allowlisting</span>
+Command & Control     egress filtering / DNS monitoring
+Actions on Objectives offline backups / DLP
+
+defense-in-depth: <span style="color:#34d399">multiple links covered</span>
+→ attacker must beat ALL of them to succeed</div></div></div>
+    <p>This is why the model endures: it makes <b>defense-in-depth</b> concrete. Each layer is another link the attacker must break, and you only need <i>one</i> to hold.</p></div>`,
+    lab:{ kind:'order', id:'02.4',
+      title:'Sequence the Kill Chain',
+      objective:'Put the seven Cyber Kill Chain stages in the correct order. The sequence is the model — recognizing where an attack is on the chain tells you what comes next.',
+      intro:'The stages are shuffled. Order them, then check.',
+      correct:['Reconnaissance','Weaponization','Delivery','Exploitation','Installation','Command & Control','Actions on Objectives'],
+      scrambled:['Delivery','Reconnaissance','Installation','Weaponization','Actions on Objectives','Exploitation','Command & Control']},
+    quiz:[
+      {q:'The core defensive insight of the Kill Chain is:',
+       o:['Attackers only need one stage','Disrupting any single stage breaks the entire attack','Recon is impossible to stop','C2 is always the first stage'],a:1,
+       e:'Because the attacker must complete every stage, a defender who breaks any one link stops the intrusion — the basis for defense-in-depth.'},
+      {q:'Which stage involves the attacker establishing a remote channel to control the compromised host?',
+       o:['Delivery','Command & Control (C2)','Reconnaissance','Weaponization'],a:1,
+       e:'Command & Control is the persistent channel back to the attacker, typically established after installation and before final actions.'},
+      {q:'Compared to MITRE ATT&CK, the Kill Chain is:',
+       o:['More granular','A simpler, linear, strategic model','A compliance standard','A control catalog'],a:1,
+       e:'The Kill Chain is a high-level linear model good for strategy and communication; ATT&CK provides the granular technique-level detail.'}
+    ]}
+  ]},
+/* ============================ MODULE 03 ============================ */
+{ id:'M03', num:'03', title:'Governance, Audit & Maturity', sub:'3 lessons · the oversight layer',
+  blurb:'How organizations govern, prove, and measure security: COBIT for IT governance, SOC 2 for demonstrating trust to customers, and the CMMC / C2M2 maturity models.',
+  lessons:[
+
+  { id:'03.1', num:'03.1', title:'COBIT — IT governance', minutes:7,
+    dek:'The framework that connects the boardroom to the server room — governing enterprise IT so technology actually serves business goals.',
+    concept:`<p><b>COBIT (Control Objectives for Information and Related Technologies)</b>, from ISACA, is a framework for the <b>governance and management of enterprise IT</b>. It sits a level above security: it governs <i>all</i> of IT to ensure technology delivers business value while managing risk and resources.</p>
+    <div class="keyterm"><div class="kt-label">Core definition</div><div class="kt-term">COBIT</div>A governance framework that aligns enterprise IT with business objectives, distinguishing governance (board-level direction and oversight) from management (planning, building, running, monitoring).</div>
+    <h3>Governance vs. Management</h3>
+    <p>COBIT's signature distinction: <b>governance</b> is the board's job — set direction, evaluate options, monitor performance (COBIT's "EDM" domain: Evaluate, Direct, Monitor). <b>Management</b> executes within that direction across four domains: Align/Plan/Organize, Build/Acquire/Implement, Deliver/Service/Support, and Monitor/Evaluate/Assess.</p>
+    <div class="analogy"><div class="al">Think of it like</div>A company's board vs. its executives. The <b>board (governance)</b> sets strategy and holds management accountable; the <b>executives (management)</b> run day-to-day operations to deliver on that strategy. COBIT formalizes that split specifically for IT.</div>
+    <h3>Where it fits</h3>
+    <p>COBIT is broader than security frameworks — it's frequently used to satisfy <b>IT general controls</b> for audits like SOX, and to give executives a governance structure that security frameworks (CSF, ISO) then plug into.</p>
+    <div class="callout real"><span class="ic">🛰️</span><div><b>From the field:</b> A common pattern: COBIT provides the overarching IT governance, ISO 27001 or NIST CSF handles the security management within it, and CIS Controls supply the concrete technical safeguards. Frameworks nest.</div></div>`,
+    example:`<p>One IT decision, split into its governance and management responsibilities the COBIT way.</p>
+    <div class="example-wrap"><div class="example-label">Worked example · governance vs. management</div>
+    <div class="console"><div class="console-bar"><div class="dots"><i style="background:#f87171"></i><i style="background:#fbbf24"></i><i style="background:#34d399"></i></div><div class="title">cobit-split.log</div><div class="chip">COBIT</div></div>
+    <div class="console-body"><div class="mono-out">decision: adopt a new cloud ERP platform
+
+<span style="color:#34d399">GOVERNANCE (board / EDM)</span>
+  Evaluate : does this align with strategy & risk appetite?
+  Direct   : approve budget, set risk tolerance
+  Monitor  : review benefits realized vs. promised
+
+<span style="color:#34d399">MANAGEMENT (execs / APO,BAI,DSS,MEA)</span>
+  Align/Plan : build the migration roadmap
+  Build      : implement & configure the ERP
+  Deliver    : run support & service desk
+  Monitor    : measure performance against SLAs</div></div></div>
+    <p>The board doesn't configure the ERP, and the implementation team doesn't set risk appetite. COBIT keeps those responsibilities cleanly separated so accountability is never ambiguous.</p></div>`,
+    lab:{ kind:'classify', id:'03.1',
+      title:'Governance or Management?',
+      objective:'Sort each IT activity into COBIT\'s <b>Governance</b> (board-level direction/oversight) or <b>Management</b> (execution) bucket.',
+      intro:'Five activities. Classify each. All correct completes the lab.',
+      threeway:['Governance','Management'],
+      items:[
+        {t:'The board sets the enterprise risk appetite for technology investments.',layer:'Governance'},
+        {t:'The IT team configures and deploys the new system.',layer:'Management'},
+        {t:'Directors evaluate whether an initiative aligns with business strategy.',layer:'Governance'},
+        {t:'The service desk resolves user tickets under an SLA.',layer:'Management'},
+        {t:'The board monitors whether promised benefits were actually realized.',layer:'Governance'}
+      ]},
+    quiz:[
+      {q:'COBIT\'s primary scope is:',
+       o:['Only network security','Governance and management of enterprise IT as a whole','Application code review','Physical security'],a:1,
+       e:'COBIT governs all of enterprise IT to align it with business goals — broader than any single security framework.'},
+      {q:'In COBIT, "governance" is primarily the responsibility of:',
+       o:['The help desk','The board / governing body (Evaluate, Direct, Monitor)','External auditors','End users'],a:1,
+       e:'Governance (the EDM domain) is the board\'s role: evaluate options, direct via decisions, and monitor outcomes. Management executes.'},
+      {q:'How does COBIT typically relate to ISO 27001 or NIST CSF?',
+       o:['They are mutually exclusive','COBIT provides overarching IT governance that security frameworks plug into','COBIT replaces them','They cannot be used together'],a:1,
+       e:'Frameworks nest: COBIT governs IT broadly while security-specific frameworks manage security within that governance structure.'}
+    ]},
+
+  { id:'03.2', num:'03.2', title:'SOC 2', minutes:8,
+    dek:'The report a service company hands customers to prove "you can trust us with your data" — built on the AICPA\'s five Trust Services Criteria.',
+    concept:`<p><b>SOC 2 (System and Organization Controls 2)</b> is an attestation report defined by the <b>AICPA</b> (the U.S. accounting body). When a SaaS or cloud vendor wants to prove to customers that it handles their data securely, it undergoes a SOC 2 audit and shares the resulting report.</p>
+    <div class="keyterm"><div class="kt-label">Core definition</div><div class="kt-term">SOC 2</div>An independent auditor's attestation that a service organization's controls meet the AICPA Trust Services Criteria, used to give customers assurance about how their data is handled.</div>
+    <h3>The five Trust Services Criteria</h3>
+    <ul>
+      <li><b>Security</b> — the only mandatory criterion (the "common criteria"). Protection against unauthorized access.</li>
+      <li><b>Availability</b> — the system is available for operation as agreed.</li>
+      <li><b>Processing Integrity</b> — processing is complete, accurate, and timely.</li>
+      <li><b>Confidentiality</b> — confidential information is protected.</li>
+      <li><b>Privacy</b> — personal information is handled per the privacy notice.</li>
+    </ul>
+    <p>You always include Security; you add the others based on what's relevant to your service.</p>
+    <h3>Type I vs. Type II</h3>
+    <p>A <b>Type I</b> report assesses whether controls are <i>suitably designed</i> at a single point in time. A <b>Type II</b> assesses whether they <i>operated effectively</i> over a period (typically 3–12 months). Type II is far more valuable and what serious customers demand.</p>
+    <div class="analogy"><div class="al">Think of it like</div>A restaurant's health inspection. <b>Type I</b> = the inspector confirms the kitchen is <i>set up</i> correctly today. <b>Type II</b> = the inspector reviews months of temperature logs to confirm it was run correctly <i>the whole time</i>. The second tells you much more.</div>`,
+    example:`<p>How a SOC 2 engagement is scoped and what the report concludes.</p>
+    <div class="example-wrap"><div class="example-label">Worked example · scoping a SOC 2 Type II</div>
+    <div class="console"><div class="console-bar"><div class="dots"><i style="background:#f87171"></i><i style="background:#fbbf24"></i><i style="background:#34d399"></i></div><div class="title">soc2-engagement.log</div><div class="chip">AICPA</div></div>
+    <div class="console-body"><div class="mono-out">org      : a B2B payroll SaaS company
+criteria : <span style="color:#34d399">Security</span> (required)
+           + <span style="color:#34d399">Availability</span> (they promise 99.9% uptime)
+           + <span style="color:#34d399">Confidentiality</span> (they hold client salary data)
+           — Privacy: excluded (no direct consumer PII role)
+type     : <span style="color:#34d399">Type II</span> — 9-month observation window
+auditor tests controls over the period...
+  access reviews performed quarterly   <span style="color:#34d399">✓</span>
+  change management followed            <span style="color:#34d399">✓</span>
+  one exception: a delayed deprovision  <span style="color:#fbbf24">⚠ noted</span>
+opinion  : <span style="color:#34d399">unqualified (clean), with one noted exception</span></div></div></div>
+    <p>The company chose three criteria relevant to its service, ran a Type II window, and earned a clean opinion despite a minor noted exception. Customers read this report instead of auditing the vendor themselves.</p></div>`,
+    lab:{ kind:'classify', id:'03.2',
+      title:'Which Trust Services Criterion?',
+      objective:'Map each control objective to the SOC 2 Trust Services Criterion it supports. This is how a SOC 2 program organizes its controls.',
+      intro:'Five objectives. Classify each. All correct completes the lab.',
+      threeway:['Security','Availability','Processing Integrity','Confidentiality'],
+      items:[
+        {t:'Enforce MFA and least privilege to prevent unauthorized access.',layer:'Security'},
+        {t:'Maintain redundant infrastructure to meet a 99.9% uptime commitment.',layer:'Availability'},
+        {t:'Validate that financial transactions are processed completely and accurately.',layer:'Processing Integrity'},
+        {t:'Encrypt and restrict access to client data marked confidential.',layer:'Confidentiality'},
+        {t:'Monitor and alert on intrusion attempts against production systems.',layer:'Security'}
+      ]},
+    quiz:[
+      {q:'Which Trust Services Criterion is always required in a SOC 2?',
+       o:['Privacy','Availability','Security','Processing Integrity'],a:2,
+       e:'Security (the "common criteria") is mandatory in every SOC 2; the other four are added based on relevance to the service.'},
+      {q:'A SOC 2 Type II report differs from Type I because it:',
+       o:['Costs less','Tests whether controls operated effectively over a period of time','Only checks design at one point in time','Is not performed by an auditor'],a:1,
+       e:'Type I assesses control design at a point in time; Type II assesses operating effectiveness over a period (often 3–12 months) — more rigorous and more valued.'},
+      {q:'Who defines the SOC 2 framework?',
+       o:['NIST','ISO','The AICPA','MITRE'],a:2,
+       e:'SOC 2 is defined by the AICPA, the American Institute of Certified Public Accountants, and performed by CPA firms.'}
+    ]},
+
+  { id:'03.3', num:'03.3', title:'Maturity models — CMMC & C2M2', minutes:7,
+    dek:'Frameworks tell you what to do; maturity models tell you how good you are at it — measuring capability on a tiered scale you can improve over time.',
+    concept:`<p>A <b>maturity model</b> measures <i>how well and how consistently</i> an organization performs its security practices, on a tiered scale. Two prominent examples: <b>CMMC</b> (mandatory for U.S. defense contractors) and <b>C2M2</b> (voluntary, energy-sector roots, broadly applicable).</p>
+    <div class="keyterm"><div class="kt-label">Model 1</div><div class="kt-term">CMMC (Cybersecurity Maturity Model Certification)</div>A U.S. Department of Defense program that <b>certifies</b> defense contractors at tiered levels, largely verifying NIST SP 800-171 implementation, to protect CUI across the defense supply chain.</div>
+    <div class="keyterm"><div class="kt-label">Model 2</div><div class="kt-term">C2M2 (Cybersecurity Capability Maturity Model)</div>A voluntary self-evaluation model (originating in the U.S. energy sector) that scores practices across domains on Maturity Indicator Levels, used to benchmark and prioritize improvement.</div>
+    <h3>Why maturity, not just compliance</h3>
+    <p>Compliance is binary — you meet a control or you don't. <b>Maturity</b> captures the difference between "we did it once" and "we do it consistently, measure it, and improve it." A practice can be <i>present but immature</i>.</p>
+    <div class="analogy"><div class="al">Think of it like</div>Learning an instrument. Compliance asks "can you play the song?" Maturity asks "can you play it reliably, sight-read new ones, and teach others?" Same activity, very different levels of capability — and only the higher levels survive pressure.</div>
+    <div class="callout warn"><span class="ic">⚠️</span><div>CMMC is <b>certified by a third party</b> at higher levels and tied to contract eligibility — failing it can mean losing defense work. C2M2 is a <b>voluntary self-assessment</b>. Same "maturity" idea, very different stakes and mechanics.</div></div>`,
+    example:`<p>One practice — access reviews — scored across maturity levels to show what "more mature" actually means.</p>
+    <div class="example-wrap"><div class="example-label">Worked example · the same practice at rising maturity</div>
+    <div class="console"><div class="console-bar"><div class="dots"><i style="background:#f87171"></i><i style="background:#fbbf24"></i><i style="background:#34d399"></i></div><div class="title">maturity-ladder.txt</div><div class="chip">MATURITY</div></div>
+    <div class="console-body"><div class="mono-out">practice: reviewing who has access to systems
+
+Level 1  <span style="color:#f87171">performed ad hoc</span>
+         "we review access when we remember to"
+Level 2  <span style="color:#fbbf24">documented & planned</span>
+         "we have a policy; reviews happen quarterly"
+Level 3  <span style="color:#34d399">managed & measured</span>
+         "reviews are tracked, metrics reported,
+          process improved each cycle"
+
+higher level = survives staff turnover & audits
+            = real, repeatable capability</div></div></div>
+    <p>The activity never changes — it's "review access." What changes is whether it's a heroic one-off or an institutionalized, measured process. Maturity models make that distinction explicit and improvable.</p></div>`,
+    lab:{ kind:'classify', id:'03.3',
+      title:'CMMC or C2M2?',
+      objective:'Distinguish the mandatory, certified <b>CMMC</b> from the voluntary, self-assessed <b>C2M2</b> based on each description.',
+      intro:'Five statements. Classify each. All correct completes the lab.',
+      threeway:['CMMC','C2M2'],
+      items:[
+        {t:'Required for U.S. Department of Defense contractors and certified by a third party.',layer:'CMMC'},
+        {t:'A voluntary self-evaluation that originated in the energy sector.',layer:'C2M2'},
+        {t:'Largely verifies implementation of NIST SP 800-171 to protect CUI.',layer:'CMMC'},
+        {t:'Scores practices on Maturity Indicator Levels for benchmarking and prioritization.',layer:'C2M2'},
+        {t:'Failing it can make a contractor ineligible for defense contracts.',layer:'CMMC'}
+      ]},
+    quiz:[
+      {q:'What does a maturity model measure that a simple compliance check does not?',
+       o:['Whether a control exists at all','How consistently and effectively a practice is performed and improved','The cost of a control','The vendor of a tool'],a:1,
+       e:'Maturity captures consistency, measurement, and improvement — the gap between doing something once and institutionalizing it.'},
+      {q:'CMMC primarily verifies implementation of which standard?',
+       o:['ISO 27001','NIST SP 800-171','PCI DSS','GDPR'],a:1,
+       e:'CMMC largely assesses defense contractors against NIST SP 800-171 requirements to protect Controlled Unclassified Information.'},
+      {q:'A key difference between CMMC and C2M2 is that:',
+       o:['They measure unrelated things','CMMC is mandatory/certified while C2M2 is voluntary/self-assessed','C2M2 is for the military only','CMMC is not a maturity model'],a:1,
+       e:'Both are maturity models, but CMMC is a mandatory, third-party-certified DoD program, whereas C2M2 is a voluntary self-assessment.'}
+    ]}
+  ]},
+/* ============================ MODULE 04 ============================ */
+{ id:'M04', num:'04', title:'Regulatory & Compliance', sub:'5 lessons · the law layer',
+  blurb:'The standards that carry the force of law or contract: PCI DSS for payment cards, HIPAA for health data, the U.S. financial and federal rules (GLBA, SOX, FISMA, FedRAMP), and the global privacy and resilience regimes (GDPR, CCPA, DORA, NIS2).',
+  lessons:[
+
+  { id:'04.1', num:'04.1', title:'PCI DSS — payment cards', minutes:7,
+    dek:'Not a law but a contractual mandate from the card brands: if you touch cardholder data, you meet these requirements or you lose the ability to process cards.',
+    concept:`<p><b>PCI DSS (Payment Card Industry Data Security Standard)</b> governs any organization that stores, processes, or transmits <b>cardholder data</b>. It's not government law — it's a <b>contractual standard</b> enforced by the major card brands (Visa, Mastercard, etc.) through the banks. Break it and you can be fined or cut off from card processing.</p>
+    <div class="keyterm"><div class="kt-label">Core definition</div><div class="kt-term">PCI DSS</div>A contractual security standard for protecting payment card data, built around 12 requirements (now organized under v4.0), enforced by the card brands rather than by law.</div>
+    <h3>The 12 requirements (high level)</h3>
+    <p>They cluster into goals: build and maintain a secure network, protect cardholder data (encryption, no storing the CVV), manage vulnerabilities, implement strong access control, monitor and test networks, and maintain a security policy. A central theme is <b>minimizing the cardholder data environment (CDE)</b> — the fewer systems that touch card data, the smaller your scope.</p>
+    <div class="analogy"><div class="al">Think of it like</div>The rules a shopping mall imposes on its stores to accept the mall's gift card. The mall (card brands) isn't the government, but if you want to take the card, you follow their security rules — or you can't be a tenant. Scope reduction is like keeping the cash in one locked room instead of every register.</div>
+    <div class="callout tip"><span class="ic">💡</span><div>The fastest way to reduce PCI scope is to <b>not store card data at all</b> — use a tokenization provider or hosted payment page so card numbers never touch your systems. Less data held = less to protect = smaller, cheaper assessment.</div></div>`,
+    example:`<p>How scope reduction changes a merchant's PCI burden.</p>
+    <div class="example-wrap"><div class="example-label">Worked example · shrinking the cardholder data environment</div>
+    <div class="console"><div class="console-bar"><div class="dots"><i style="background:#f87171"></i><i style="background:#fbbf24"></i><i style="background:#34d399"></i></div><div class="title">pci-scope.log</div><div class="chip">PCI DSS v4.0</div></div>
+    <div class="console-body"><div class="mono-out"><span style="color:#f87171">BEFORE</span> — store card numbers in own database
+  CDE = web servers + app + database + backups
+  every system in scope for all 12 requirements
+  assessment: large, costly, high breach risk
+
+<span style="color:#34d399">AFTER</span> — use a tokenization gateway
+  card number never touches merchant systems
+  merchant stores only a meaningless token
+  CDE shrinks dramatically → <span style="color:#34d399">scope minimized</span>
+  (still in scope, but far less to secure)</div></div></div>
+    <p>Same business, radically smaller compliance footprint. The lesson PCI teaches everyone: <b>the safest data is the data you never hold.</b></p></div>`,
+    lab:{ kind:'classify', id:'04.1',
+      title:'In scope or out of scope?',
+      objective:'Decide whether each system is likely <b>in the cardholder data environment</b> (PCI in-scope) or <b>out of scope</b>. Scoping is the foundational PCI skill.',
+      intro:'Five systems. Classify each. All correct completes the lab.',
+      threeway:['In Scope','Out of Scope'],
+      items:[
+        {t:'A database that stores full payment card numbers.',layer:'In Scope'},
+        {t:'The corporate cafeteria menu web page on an isolated network.',layer:'Out of Scope'},
+        {t:'A payment application that processes live card transactions.',layer:'In Scope'},
+        {t:'An HR system holding only employee records, fully segmented from payments.',layer:'Out of Scope'},
+        {t:'A server that transmits cardholder data to the processor.',layer:'In Scope'}
+      ]},
+    quiz:[
+      {q:'PCI DSS is enforced by:',
+       o:['The U.S. federal government','The card brands via contractual obligations','The European Union','ISO'],a:1,
+       e:'PCI DSS is a contractual standard enforced by the payment card brands and acquiring banks, not a government law.'},
+      {q:'The most effective way to reduce PCI DSS scope is to:',
+       o:['Hire more auditors','Avoid storing/handling card data (e.g., tokenization)','Encrypt the office Wi-Fi','Buy cyber insurance'],a:1,
+       e:'Removing card data from your environment via tokenization or hosted payment pages shrinks the cardholder data environment and your obligations.'},
+      {q:'"CDE" in PCI DSS stands for:',
+       o:['Card Data Encryption','Cardholder Data Environment','Compliance Defense Engine','Central Data Exchange'],a:1,
+       e:'The Cardholder Data Environment is the set of systems that store, process, or transmit card data — the scope of the assessment.'}
+    ]},
+
+  { id:'04.2', num:'04.2', title:'HIPAA & HITECH — healthcare', minutes:7,
+    dek:'The U.S. law protecting health information — and the act that gave it teeth, mandating breach notification and raising the penalties.',
+    concept:`<p><b>HIPAA (Health Insurance Portability and Accountability Act)</b> is the U.S. law governing the protection of <b>Protected Health Information (PHI)</b>. Its <b>Security Rule</b> mandates administrative, physical, and technical safeguards for electronic PHI; its <b>Privacy Rule</b> governs use and disclosure.</p>
+    <div class="keyterm"><div class="kt-label">Core definition</div><div class="kt-term">HIPAA</div>A U.S. law requiring covered entities (and their business associates) to protect Protected Health Information through Privacy and Security Rules, with safeguards across administrative, physical, and technical domains.</div>
+    <div class="keyterm"><div class="kt-label">Key terms</div><div class="kt-term">PHI · Covered Entity · Business Associate</div><b>PHI</b> is individually identifiable health information. A <b>Covered Entity</b> is a provider, health plan, or clearinghouse. A <b>Business Associate</b> is a vendor that handles PHI on their behalf (e.g., a cloud host) — bound by a Business Associate Agreement (BAA).</div>
+    <h3>HITECH — the enforcement upgrade</h3>
+    <p>The <b>HITECH Act (2009)</b> strengthened HIPAA: it introduced the mandatory <b>Breach Notification Rule</b> (you must notify affected individuals, HHS, and sometimes the media), increased penalties, and extended direct liability to business associates.</p>
+    <div class="analogy"><div class="al">Think of it like</div>HIPAA is the rulebook for handling a patient's diary; HITECH is the amendment that added "and if you lose the diary, you must announce it publicly and pay a steep fine." The notification requirement changed behavior more than the original rules did.</div>
+    <div class="callout warn"><span class="ic">⚠️</span><div>The safeguards are split into <b>Required</b> and <b>Addressable</b>. "Addressable" does <i>not</i> mean optional — it means you implement it, or document a justified reason and an equivalent alternative. Treating "addressable" as "ignore" is a classic compliance failure.</div></div>`,
+    example:`<p>One vendor relationship, mapped to HIPAA roles and the safeguard that applies.</p>
+    <div class="example-wrap"><div class="example-label">Worked example · roles and safeguards</div>
+    <div class="console"><div class="console-bar"><div class="dots"><i style="background:#f87171"></i><i style="background:#fbbf24"></i><i style="background:#34d399"></i></div><div class="title">hipaa-roles.log</div><div class="chip">HIPAA / HITECH</div></div>
+    <div class="console-body"><div class="mono-out">a clinic uses a cloud EHR vendor
+
+clinic       = <span style="color:#34d399">Covered Entity</span>
+cloud vendor = <span style="color:#34d399">Business Associate</span> → needs a BAA
+data         = patient records = <span style="color:#34d399">PHI (ePHI)</span>
+
+SECURITY RULE safeguards in play:
+  Administrative : workforce training, risk analysis
+  Physical       : datacenter access controls
+  Technical      : encryption of ePHI (addressable),
+                   audit logs, access controls
+
+HITECH: laptop with ePHI is stolen unencrypted
+  → <span style="color:#f87171">Breach Notification Rule triggers</span>
+  → notify individuals + HHS (+ media if 500+)</div></div></div>
+    <p>The encryption was "addressable" — and skipping it turned a lost laptop into a reportable breach. HITECH's notification rule is what makes that omission so costly.</p></div>`,
+    lab:{ kind:'match', id:'04.2',
+      title:'Match the HIPAA term to its meaning',
+      objective:'Match each HIPAA/HITECH concept to its definition. These terms are the vocabulary of every healthcare security conversation.',
+      intro:'Match each term to its meaning. All correct completes the lab.',
+      pairs:[
+        {l:'PHI',r:'Individually identifiable health information'},
+        {l:'Covered Entity',r:'A provider, health plan, or clearinghouse'},
+        {l:'Business Associate',r:'A vendor handling PHI on an entity\'s behalf'},
+        {l:'HITECH Breach Notification',r:'Duty to disclose breaches of unsecured PHI'}
+      ]},
+    quiz:[
+      {q:'What did the HITECH Act add to HIPAA?',
+       o:['It repealed the Privacy Rule','Mandatory breach notification, higher penalties, BA liability','Coverage for payment cards','EU jurisdiction'],a:1,
+       e:'HITECH introduced the Breach Notification Rule, raised penalties, and made business associates directly liable.'},
+      {q:'An "addressable" HIPAA safeguard means:',
+       o:['Completely optional','Implement it, or document why not and use an equivalent alternative','Required only for hospitals','Already handled by HITECH'],a:1,
+       e:'Addressable safeguards must be implemented unless you document a reasonable justification and an equivalent measure — not simply skipped.'},
+      {q:'A cloud vendor that stores a clinic\'s patient records is a:',
+       o:['Covered Entity','Business Associate','Clearinghouse','Data Subject'],a:1,
+       e:'A vendor handling PHI on behalf of a covered entity is a Business Associate and must sign a Business Associate Agreement (BAA).'}
+    ]},
+
+  { id:'04.3', num:'04.3', title:'U.S. financial & federal: GLBA, SOX, FISMA, FedRAMP', minutes:8,
+    dek:'Four U.S. regimes that govern money and government: protecting customer financial data, ensuring accurate financial reporting, and securing federal systems and the clouds they use.',
+    concept:`<p>Four distinct U.S. laws/programs cluster around finance and the federal government. They're often confused, so the key is knowing <i>what each one protects</i>.</p>
+    <div class="keyterm"><div class="kt-label">Finance 1</div><div class="kt-term">GLBA (Gramm-Leach-Bliley Act)</div>Requires financial institutions to protect customers' <b>nonpublic personal information</b>; its <b>Safeguards Rule</b> mandates a written information security program.</div>
+    <div class="keyterm"><div class="kt-label">Finance 2</div><div class="kt-term">SOX (Sarbanes-Oxley Act)</div>Requires public companies to ensure the <b>integrity and accuracy of financial reporting</b>. Section 404 drives IT general controls over systems that touch financial data.</div>
+    <div class="keyterm"><div class="kt-label">Federal 1</div><div class="kt-term">FISMA (Federal Information Security Modernization Act)</div>Requires U.S. <b>federal agencies</b> to secure their information systems — implemented largely through the NIST RMF and SP 800-53.</div>
+    <div class="keyterm"><div class="kt-label">Federal 2</div><div class="kt-term">FedRAMP</div>A standardized program for authorizing <b>cloud services used by the federal government</b> — "do it once, use it many times" cloud security authorization.</div>
+    <h3>The unifying thread</h3>
+    <p><b>GLBA</b> = protect customer financial data. <b>SOX</b> = protect the truthfulness of financial statements. <b>FISMA</b> = secure federal agency systems. <b>FedRAMP</b> = secure the clouds those agencies buy.</p>
+    <div class="analogy"><div class="al">Think of it like</div>Four different guards. GLBA guards your bank account details. SOX guards the company's published numbers. FISMA guards the government's own computers. FedRAMP vets the outside contractors (clouds) before the government lets them in the building.</div>`,
+    example:`<p>One scenario touching all four, to keep them straight.</p>
+    <div class="example-wrap"><div class="example-label">Worked example · who governs what</div>
+    <div class="console"><div class="console-bar"><div class="dots"><i style="background:#f87171"></i><i style="background:#fbbf24"></i><i style="background:#34d399"></i></div><div class="title">us-regimes.map</div></div>
+    <div class="console-body"><div class="mono-out">a publicly-traded bank that sells SaaS to a US agency
+
+protect customers' account info ......... <span style="color:#34d399">GLBA</span>
+ensure quarterly financials are accurate. <span style="color:#34d399">SOX</span>
+the federal agency secures its systems .. <span style="color:#34d399">FISMA</span>
+the bank's cloud must be authorized to
+  sell to that agency .................... <span style="color:#34d399">FedRAMP</span>
+
+note: FISMA + FedRAMP both lean on
+      <span style="color:#fbbf24">NIST RMF + SP 800-53</span> under the hood</div></div></div>
+    <p>Different targets, overlapping machinery. Both federal regimes run on the NIST RMF and 800-53 you learned in Module 1 — frameworks reused as the engine of law.</p></div>`,
+    lab:{ kind:'match', id:'04.3',
+      title:'Match the regime to what it protects',
+      objective:'Match each U.S. regime to the thing it is designed to protect. This is the single most useful way to keep these four apart.',
+      intro:'Match each law/program to its purpose. All correct completes the lab.',
+      pairs:[
+        {l:'GLBA',r:'Customers\' nonpublic financial information'},
+        {l:'SOX',r:'Accuracy of public-company financial reporting'},
+        {l:'FISMA',r:'Security of federal agency information systems'},
+        {l:'FedRAMP',r:'Authorization of cloud services for federal use'}
+      ]},
+    quiz:[
+      {q:'The GLBA Safeguards Rule requires financial institutions to:',
+       o:['Publish their source code','Maintain a written information security program protecting customer data','Use a specific cloud vendor','Report to the EU'],a:1,
+       e:'GLBA\'s Safeguards Rule mandates a documented information security program to protect customers\' nonpublic personal information.'},
+      {q:'SOX is primarily concerned with:',
+       o:['Health records','The integrity and accuracy of public-company financial reporting','Payment cards','Federal clouds'],a:1,
+       e:'Sarbanes-Oxley targets the truthfulness of financial statements; its Section 404 drives IT general controls over financial systems.'},
+      {q:'FedRAMP\'s "authorize once, use many times" model applies to:',
+       o:['Individual user accounts','Cloud services sold to the federal government','Physical badges','Credit card terminals'],a:1,
+       e:'FedRAMP standardizes the security authorization of cloud services for federal use so one authorization can be reused across agencies.'}
+    ]},
+
+  { id:'04.4', num:'04.4', title:'Global privacy: GDPR & CCPA/CPRA', minutes:8,
+    dek:'The laws that gave individuals rights over their own data. GDPR set the global template from Europe; California\'s CCPA/CPRA leads the U.S. patchwork.',
+    concept:`<p>Privacy law shifted the question from "is the data secure?" to "does the <i>individual</i> have rights over it?" The <b>GDPR</b> (EU) is the landmark; <b>CCPA/CPRA</b> (California) is the most influential U.S. equivalent.</p>
+    <div class="keyterm"><div class="kt-label">Global benchmark</div><div class="kt-term">GDPR (General Data Protection Regulation)</div>The EU regulation governing processing of personal data of people in the EU. It grants data-subject rights (access, erasure, portability), requires a lawful basis to process, mandates breach notification (72 hours), and carries fines up to 4% of global annual revenue.</div>
+    <div class="keyterm"><div class="kt-label">U.S. leader</div><div class="kt-term">CCPA / CPRA</div>California's privacy laws giving consumers rights to know, delete, correct, and opt out of the sale/sharing of their personal information. The CPRA expanded the CCPA and created a dedicated enforcement agency.</div>
+    <h3>Key GDPR concepts</h3>
+    <ul>
+      <li><b>Controller vs. Processor</b> — the controller decides why/how data is processed; the processor acts on the controller's instructions.</li>
+      <li><b>Lawful basis</b> — you need a valid reason to process (consent, contract, legitimate interest, etc.).</li>
+      <li><b>Data-subject rights</b> — access, rectification, erasure ("right to be forgotten"), portability, objection.</li>
+      <li><b>Extraterritorial reach</b> — it applies to anyone processing EU residents' data, wherever the company is.</li>
+    </ul>
+    <div class="analogy"><div class="al">Think of it like</div>Your data as your personal property that companies borrow. GDPR says they need a valid reason to borrow it, must tell you what they're doing, must give it back or destroy it on request, and must confess quickly if they lose it. CCPA gives Californians a strong version of those same property rights.</div>
+    <div class="callout warn"><span class="ic">⚠️</span><div>Security ≠ privacy. You can hold data perfectly <i>securely</i> and still violate <i>privacy</i> law by collecting it without a lawful basis or ignoring a deletion request. Privacy regimes regulate the <i>right to process</i>, not just the protection.</div></div>`,
+    example:`<p>One data-subject request, handled the GDPR way.</p>
+    <div class="example-wrap"><div class="example-label">Worked example · a "right to erasure" request</div>
+    <div class="console"><div class="console-bar"><div class="dots"><i style="background:#f87171"></i><i style="background:#fbbf24"></i><i style="background:#34d399"></i></div><div class="title">gdpr-dsar.log</div><div class="chip">GDPR</div></div>
+    <div class="console-body"><div class="mono-out">EU resident emails: "delete all my data"
+
+1. verify identity of the data subject
+2. role check: are we <span style="color:#34d399">controller</span> or processor?
+   → controller: we must act + instruct processors
+3. locate personal data across all systems
+4. check for overriding lawful basis to retain
+   (e.g., legal obligation to keep invoices)
+5. erase what isn't legally required to keep
+6. respond within <span style="color:#34d399">one month</span>
+
+failure to honor → complaint to a DPA →
+  potential fine up to <span style="color:#f87171">4% global revenue</span></div></div></div>
+    <p>Notice step 4: erasure isn't absolute — a competing lawful basis (like tax-record retention) can override it. Privacy law is a balance of rights, not a single rule.</p></div>`,
+    lab:{ kind:'classify', id:'04.4',
+      title:'Controller or Processor?',
+      objective:'Classify each party as a GDPR <b>Controller</b> (decides why/how data is processed) or <b>Processor</b> (acts on the controller\'s instructions). This role split drives who is responsible for what.',
+      intro:'Five parties. Classify each. All correct completes the lab.',
+      threeway:['Controller','Processor'],
+      items:[
+        {t:'An online retailer that decides to collect customer data for marketing.',layer:'Controller'},
+        {t:'A cloud email provider that stores messages on the retailer\'s behalf.',layer:'Processor'},
+        {t:'A hospital deciding what patient data to gather and why.',layer:'Controller'},
+        {t:'A payroll SaaS that processes employee data per its client\'s instructions.',layer:'Processor'},
+        {t:'A bank determining the purposes for processing account holders\' data.',layer:'Controller'}
+      ]},
+    quiz:[
+      {q:'GDPR\'s breach notification deadline to the supervisory authority is generally:',
+       o:['Immediately','72 hours','30 days','1 year'],a:1,
+       e:'Controllers must notify the relevant supervisory authority within 72 hours of becoming aware of a personal-data breach, where feasible.'},
+      {q:'The "right to be forgotten" is also known as the right to:',
+       o:['Portability','Erasure','Rectification','Access'],a:1,
+       e:'The right to erasure ("right to be forgotten") lets data subjects request deletion of their personal data, subject to certain limits.'},
+      {q:'A company can be fully compliant on data security yet still violate GDPR by:',
+       o:['Using encryption','Processing personal data without a lawful basis','Backing up data','Training staff'],a:1,
+       e:'Privacy law regulates the right to process; collecting or using data without a lawful basis violates GDPR regardless of how securely it is stored.'}
+    ]},
+
+  { id:'04.5', num:'04.5', title:'EU resilience & infrastructure: DORA, NIS2, NERC CIP', minutes:8,
+    dek:'The newest wave: rules that go beyond data to mandate operational resilience for financial firms, baseline security for essential services, and protection of the power grid.',
+    concept:`<p>Recent regulation has shifted from protecting <i>data</i> to guaranteeing <i>resilience</i> of critical services. Three regimes lead this wave.</p>
+    <div class="keyterm"><div class="kt-label">EU finance</div><div class="kt-term">DORA (Digital Operational Resilience Act)</div>An EU regulation (applicable since Jan 2025) requiring financial entities to withstand, respond to, and recover from ICT-related disruptions. Covers ICT risk management, incident reporting, resilience testing, and oversight of critical third-party ICT providers.</div>
+    <div class="keyterm"><div class="kt-label">EU essential services</div><div class="kt-term">NIS2 Directive</div>An EU directive expanding cybersecurity obligations across "essential" and "important" entities (energy, transport, health, digital infra, and more), mandating risk-management measures, incident reporting, and management accountability.</div>
+    <div class="keyterm"><div class="kt-label">North American grid</div><div class="kt-term">NERC CIP</div>Mandatory Critical Infrastructure Protection standards for the North American <b>bulk electric system</b> — protecting the power grid, with enforceable penalties.</div>
+    <h3>The common theme: keep running</h3>
+    <p>These don't just ask "is the data safe?" They ask "can this <b>essential service keep operating</b> and recover when attacked?" DORA stress-tests financial firms' resilience; NIS2 raises the security floor for critical sectors and puts <i>executives</i> on the hook; NERC CIP keeps the lights on.</p>
+    <div class="analogy"><div class="al">Think of it like</div>Building codes for earthquakes rather than locks on doors. It's not only "keep burglars out" (data protection) — it's "ensure the hospital, the bank, and the power station <i>stay standing and functioning</i> when the ground shakes." Resilience, not just confidentiality.</div>
+    <div class="callout real"><span class="ic">🛰️</span><div><b>From the field:</b> A standout DORA feature is oversight of <b>critical third-party ICT providers</b> (think major cloud platforms). Regulators recognized that if everyone's bank runs on the same few clouds, those clouds become systemic risk — and brought them into scope.</div></div>`,
+    example:`<p>The same incident type, seen through each regime's distinct lens.</p>
+    <div class="example-wrap"><div class="example-label">Worked example · three regimes, three concerns</div>
+    <div class="console"><div class="console-bar"><div class="dots"><i style="background:#f87171"></i><i style="background:#fbbf24"></i><i style="background:#34d399"></i></div><div class="title">resilience-lens.txt</div></div>
+    <div class="console-body"><div class="mono-out">event: a major cloud outage hits critical services
+
+<span style="color:#34d399">DORA</span> (an EU bank on that cloud)
+  → was resilience tested? incident reported?
+    is this critical ICT provider under oversight?
+<span style="color:#34d399">NIS2</span> (an EU hospital / energy firm affected)
+  → risk-mgmt measures in place? reported in time?
+    is management held accountable?
+<span style="color:#34d399">NERC CIP</span> (a North American grid operator)
+  → are bulk-electric-system assets protected &
+    recoverable? enforceable penalties apply</div></div></div>
+    <p>One technical event, three regulatory questions — all about <b>continuity and accountability</b>, not just data confidentiality. That's the signature of the resilience era.</p></div>`,
+    lab:{ kind:'classify', id:'04.5',
+      title:'Which resilience regime applies?',
+      objective:'Map each scenario to the regime that primarily governs it: <b>DORA</b> (EU finance), <b>NIS2</b> (EU essential/important entities), or <b>NERC CIP</b> (North American grid).',
+      intro:'Five scenarios. Classify each. All correct completes the lab.',
+      threeway:['DORA','NIS2','NERC CIP'],
+      items:[
+        {t:'An EU investment bank must prove it can recover from an ICT disruption and report incidents.',layer:'DORA'},
+        {t:'A North American power utility must protect bulk electric system assets or face penalties.',layer:'NERC CIP'},
+        {t:'An EU hospital classified as an essential entity must adopt risk-management measures.',layer:'NIS2'},
+        {t:'A regulator wants oversight of a critical cloud provider serving EU financial firms.',layer:'DORA'},
+        {t:'An EU logistics company deemed an important entity faces management-accountability rules.',layer:'NIS2'}
+      ]},
+    quiz:[
+      {q:'DORA is primarily about ensuring financial entities can:',
+       o:['Sell more products','Withstand, respond to, and recover from ICT disruptions','Avoid paying taxes','Store data in the U.S.'],a:1,
+       e:'The Digital Operational Resilience Act focuses on operational resilience: surviving and recovering from ICT-related incidents, plus oversight of critical ICT providers.'},
+      {q:'A notable feature of NIS2 compared to earlier rules is:',
+       o:['It removes incident reporting','It expands scope and adds management accountability','It only applies to banks','It is voluntary'],a:1,
+       e:'NIS2 broadens covered sectors/entities and explicitly holds management accountable for cybersecurity risk-management measures.'},
+      {q:'NERC CIP protects:',
+       o:['EU consumer privacy','The North American bulk electric system (power grid)','Payment card data','Federal cloud services'],a:1,
+       e:'NERC CIP is the set of mandatory, enforceable standards protecting the North American bulk electric system.'}
+    ]}
+  ]},
+/* ============================ MODULE 05 ============================ */
+{ id:'M05', num:'05', title:'Cloud & Specialized', sub:'3 lessons · the frontier',
+  blurb:'Where the perimeter dissolves and the machines get physical: the CSA Cloud Controls Matrix and STAR for cloud assurance, ISO 27017/27018 for cloud security and privacy, and IEC 62443 for industrial control systems.',
+  lessons:[
+
+  { id:'05.1', num:'05.1', title:'CSA Cloud Controls Matrix & STAR', minutes:7,
+    dek:'The cloud industry\'s own answer to "how do we trust a cloud provider?" — a cloud-specific control framework and a public registry of who meets it.',
+    concept:`<p>The <b>Cloud Security Alliance (CSA)</b> produces cloud-specific assurance resources. Its flagship is the <b>Cloud Controls Matrix (CCM)</b>, paired with the <b>STAR</b> registry that publishes providers' assessments.</p>
+    <div class="keyterm"><div class="kt-label">Framework</div><div class="kt-term">CSA Cloud Controls Matrix (CCM)</div>A cybersecurity control framework purpose-built for cloud computing, organized into domains, with each control mapped to other standards (ISO 27001, NIST, PCI DSS) so one assessment shows compliance across many.</div>
+    <div class="keyterm"><div class="kt-label">Registry</div><div class="kt-term">CSA STAR (Security, Trust, Assurance &amp; Risk)</div>A public registry where cloud providers publish their security posture — Level 1 (self-assessment) and Level 2 (third-party audit) — so customers can evaluate them without a custom questionnaire.</div>
+    <h3>The shared responsibility model</h3>
+    <p>Cloud's defining concept is <b>shared responsibility</b>: the provider secures the cloud <i>infrastructure</i>; the customer secures what they put <i>in</i> it (their data, configurations, access). The exact line shifts between IaaS, PaaS, and SaaS. The CCM helps clarify which controls belong to whom.</p>
+    <div class="analogy"><div class="al">Think of it like</div>Renting an apartment. The landlord (provider) secures the building structure, the main door locks, and fire systems. You (customer) lock your own unit, don't leave valuables in the hallway, and decide who gets a key. Most cloud breaches are the tenant leaving the door open — misconfiguration — not the building failing.</div>
+    <div class="callout tip"><span class="ic">💡</span><div>The CCM's superpower is its <b>mappings</b>: one CCM control links to the equivalent ISO 27001, NIST, and PCI controls. Assess once against the CCM and demonstrate alignment with multiple frameworks at once — a huge efficiency for cloud providers.</div></div>`,
+    example:`<p>The shared responsibility line, drawn across service models.</p>
+    <div class="example-wrap"><div class="example-label">Worked example · who secures what</div>
+    <div class="console"><div class="console-bar"><div class="dots"><i style="background:#f87171"></i><i style="background:#fbbf24"></i><i style="background:#34d399"></i></div><div class="title">shared-responsibility.map</div><div class="chip">CSA CCM</div></div>
+    <div class="console-body"><div class="mono-out">layer            IaaS        PaaS        SaaS
+-----------------------------------------------------
+data & access    <span style="color:#34d399">customer</span>    <span style="color:#34d399">customer</span>    <span style="color:#34d399">customer</span>
+application      <span style="color:#34d399">customer</span>    shared      provider
+OS / runtime     <span style="color:#34d399">customer</span>    provider    provider
+virtualization   provider    provider    provider
+physical infra   provider    provider    provider
+
+constant across every model:
+  <span style="color:#fbbf24">your data and your identities are ALWAYS yours</span></div></div></div>
+    <p>Notice the top row never changes: <b>data and access management are always the customer's job</b>, no matter the service model. That single insight prevents the most common cloud breaches.</p></div>`,
+    lab:{ kind:'classify', id:'05.1',
+      title:'Whose responsibility? (IaaS)',
+      objective:'In an <b>IaaS</b> deployment, decide whether each task belongs to the <b>Customer</b> or the cloud <b>Provider</b> under the shared responsibility model.',
+      intro:'Five tasks in an IaaS scenario. Classify each. All correct completes the lab.',
+      threeway:['Customer','Provider'],
+      items:[
+        {t:'Patching the guest operating system on a virtual machine.',layer:'Customer'},
+        {t:'Physically securing the data center and its hardware.',layer:'Provider'},
+        {t:'Configuring identity and access permissions for the workload.',layer:'Customer'},
+        {t:'Maintaining the hypervisor and virtualization layer.',layer:'Provider'},
+        {t:'Classifying and encrypting the application\'s data.',layer:'Customer'}
+      ]},
+    quiz:[
+      {q:'Under the cloud shared responsibility model, which is ALWAYS the customer\'s responsibility?',
+       o:['Physical data center security','Their own data and access management','The hypervisor','The building\'s power supply'],a:1,
+       e:'Across IaaS, PaaS, and SaaS, the customer always owns their data and identity/access management; lower layers shift to the provider.'},
+      {q:'What is the main benefit of the CCM\'s control mappings?',
+       o:['They hide controls from auditors','One CCM assessment demonstrates alignment with multiple frameworks','They replace all other standards','They only apply to SaaS'],a:1,
+       e:'Each CCM control maps to equivalents in ISO, NIST, PCI, etc., so assessing once shows compliance across many frameworks.'},
+      {q:'A CSA STAR Level 2 entry indicates:',
+       o:['A self-assessment only','A third-party audit of the provider\'s posture','A government certification','A penetration test'],a:1,
+       e:'STAR Level 1 is a self-assessment; Level 2 reflects an independent third-party audit, offering stronger assurance.'}
+    ]},
+
+  { id:'05.2', num:'05.2', title:'ISO/IEC 27017 & 27018 — cloud security & privacy', minutes:7,
+    dek:'Two focused extensions of the ISO 27000 family that adapt its controls to the specific realities of cloud computing and cloud-held personal data.',
+    concept:`<p>The base ISO 27001/27002 controls weren't written with cloud in mind. Two extensions fill that gap: <b>ISO/IEC 27017</b> for cloud <i>security</i> and <b>ISO/IEC 27018</b> for cloud <i>privacy</i>. Both build directly on 27002.</p>
+    <div class="keyterm"><div class="kt-label">Cloud security</div><div class="kt-term">ISO/IEC 27017</div>A code of practice that gives cloud-specific security guidance — additional controls and implementation guidance for both cloud providers and cloud customers, clarifying shared responsibilities.</div>
+    <div class="keyterm"><div class="kt-label">Cloud privacy</div><div class="kt-term">ISO/IEC 27018</div>A code of practice for protecting <b>personally identifiable information (PII)</b> in public clouds acting as PII processors — covering consent, transparency, and limits on using customer data.</div>
+    <h3>How they extend the family</h3>
+    <p>These aren't standalone. They layer on top of an ISO 27001 ISMS: you implement 27002's controls, then add 27017's cloud-security guidance and 27018's PII-protection guidance where relevant. They make explicit things the base standards leave generic — like the division of duties between provider and tenant.</p>
+    <div class="analogy"><div class="al">Think of it like</div>A general driving manual (27002) versus add-on guides for driving a specific vehicle. <b>27017</b> is "how these rules apply when you're operating in the cloud." <b>27018</b> is "the extra rules when your cargo is other people's personal belongings." Same foundation, specialized supplements.</div>
+    <div class="callout real"><span class="ic">🛰️</span><div><b>From the field:</b> A major cloud provider will often hold ISO 27001 certification <i>and</i> advertise alignment with 27017 and 27018, signaling "we manage security systematically, we've addressed cloud-specific risks, and we protect the personal data you store with us."</div></div>`,
+    example:`<p>One control area shown at each layer of the ISO stack.</p>
+    <div class="example-wrap"><div class="example-label">Worked example · layering the cloud extensions</div>
+    <div class="console"><div class="console-bar"><div class="dots"><i style="background:#f87171"></i><i style="background:#fbbf24"></i><i style="background:#34d399"></i></div><div class="title">iso-cloud-stack.txt</div><div class="chip">ISO 27017/18</div></div>
+    <div class="console-body"><div class="mono-out">topic: handling customer data in a public cloud
+
+<span style="color:#34d399">27001</span> ISMS requires you manage information
+       security risk systematically (certifiable)
+<span style="color:#34d399">27002</span> base control: cryptography, access control
+<span style="color:#34d399">27017</span> cloud add-on: clarify who manages keys,
+       segregation in shared/virtual environments
+<span style="color:#34d399">27018</span> PII add-on: don't use customer PII for
+       your own advertising; support data return
+       & deletion; be transparent about subcontractors
+
+result: a cloud service that is secure AND
+        privacy-respecting, provably so</div></div></div>
+    <p>Each layer adds specificity the one below it lacked. The base ISMS proves you're systematic; the extensions prove you've handled the cloud's particular hazards.</p></div>`,
+    lab:{ kind:'match', id:'05.2',
+      title:'Match the ISO standard to its focus',
+      objective:'Match each ISO standard to its specific role across the security and cloud stack. This cements how the cloud extensions relate to the base family.',
+      intro:'Match each standard to its focus. All correct completes the lab.',
+      pairs:[
+        {l:'ISO/IEC 27001',r:'Certifiable ISMS requirements'},
+        {l:'ISO/IEC 27002',r:'Baseline security control guidance'},
+        {l:'ISO/IEC 27017',r:'Cloud-specific security guidance'},
+        {l:'ISO/IEC 27018',r:'Protecting PII in public clouds'}
+      ]},
+    quiz:[
+      {q:'ISO/IEC 27018 specifically addresses:',
+       o:['Industrial control systems','Protection of personal data (PII) in public clouds','Payment card data','Federal authorization'],a:1,
+       e:'27018 is a code of practice for protecting PII when a public cloud acts as a PII processor — the cloud-privacy extension.'},
+      {q:'ISO/IEC 27017 and 27018 are best described as:',
+       o:['Replacements for ISO 27001','Cloud-focused extensions that build on the ISO 27000 family','Unrelated U.S. laws','Maturity models'],a:1,
+       e:'They are codes of practice that layer cloud-security (27017) and cloud-privacy (27018) guidance on top of the base ISO 27001/27002 framework.'},
+      {q:'A practical privacy guidance in 27018 is that a cloud provider should:',
+       o:['Use customer PII for its own advertising','Not use customer PII for its own marketing without consent','Sell PII to subcontractors','Delete all logs'],a:1,
+       e:'27018 restricts a processor from using customers\' PII for its own purposes (like advertising) without consent, among other transparency and control measures.'}
+    ]},
+
+  { id:'05.3', num:'05.3', title:'IEC 62443 — industrial & OT security', minutes:8,
+    dek:'Securing the systems that run factories, pipelines, and power plants — where a cyber failure can stop production or endanger lives, and "just patch it" isn\'t an option.',
+    concept:`<p>Almost everything so far protects <b>IT</b> — data and business systems. <b>IEC 62443</b> protects <b>OT (Operational Technology)</b>: the <b>Industrial Automation and Control Systems (IACS)</b> that physically run factories, refineries, water treatment, and the grid.</p>
+    <div class="keyterm"><div class="kt-label">Core definition</div><div class="kt-term">IEC 62443</div>A series of international standards for the security of Industrial Automation and Control Systems (IACS/OT), addressing people, processes, and technology across asset owners, integrators, and product suppliers.</div>
+    <h3>Why OT is different from IT</h3>
+    <ul>
+      <li><b>Priorities flip.</b> IT prioritizes confidentiality first; OT prioritizes <b>availability and safety</b> first — a stopped turbine or a tripped safety system can hurt people.</li>
+      <li><b>You can't just patch.</b> Systems run 24/7 for years; a reboot may halt production. Decades-old equipment may be unpatchable.</li>
+      <li><b>Physical consequences.</b> A breach can cause explosions, blackouts, or contaminated water — not just data loss.</li>
+    </ul>
+    <h3>Key concepts</h3>
+    <p>IEC 62443 introduces <b>Zones and Conduits</b> (segment the network into security zones, control the conduits between them) and <b>Security Levels (SL 1–4)</b> describing resistance from casual to nation-state-level attackers. It assigns responsibilities across <b>asset owners, system integrators, and product suppliers</b>.</p>
+    <div class="analogy"><div class="al">Think of it like</div>Securing a hospital's life-support machines versus its email server. You cannot "reboot to install updates" on a ventilator mid-use, and a failure isn't an inconvenience — it's a life-safety event. OT security plans around uptime and physical safety in a way office IT never has to.</div>
+    <div class="callout danger"><span class="ic">🛑</span><div>The reason OT security is urgent: real incidents (Stuxnet, attacks on power grids and water systems) proved that cyber attacks can cause <b>physical destruction and threaten public safety</b>. The stakes are measured in lives and infrastructure, not just records.</div></div>`,
+    example:`<p>The IT-vs-OT mindset shift, and how 62443 segments a plant.</p>
+    <div class="example-wrap"><div class="example-label">Worked example · zones, conduits & flipped priorities</div>
+    <div class="console"><div class="console-bar"><div class="dots"><i style="background:#f87171"></i><i style="background:#fbbf24"></i><i style="background:#34d399"></i></div><div class="title">iec62443-plant.map</div><div class="chip">IEC 62443</div></div>
+    <div class="console-body"><div class="mono-out">priority order:
+  IT  : <span style="color:#34d399">Confidentiality</span> > Integrity > Availability
+  OT  : <span style="color:#34d399">Availability/Safety</span> > Integrity > Confidentiality
+
+plant segmentation (Zones & Conduits):
+  [Enterprise IT zone]
+        |  conduit (tightly controlled, monitored)
+  [DMZ / data historian]
+        |  conduit
+  [Control zone: PLCs, SCADA]  ← SL-3 target
+        |  conduit
+  [Safety zone: SIS]           ← <span style="color:#f87171">SL-4, most isolated</span>
+
+rule: a breach in IT must NOT reach the safety zone</div></div></div>
+    <p>The segmentation exists so a compromise of the office network can't cascade into the systems that keep the plant — and its workers — safe. That containment is the heart of IEC 62443.</p></div>`,
+    lab:{ kind:'classify', id:'05.3',
+      title:'IT priority or OT priority?',
+      objective:'Classify each statement as reflecting a traditional <b>IT</b> security mindset or an <b>OT</b> (industrial) security mindset. The mindset flip is the core lesson of IEC 62443.',
+      intro:'Five statements. Classify each. All correct completes the lab.',
+      threeway:['IT mindset','OT mindset'],
+      items:[
+        {t:'"Confidentiality of data is our top concern; we can tolerate brief downtime."',layer:'IT mindset'},
+        {t:'"We cannot reboot to patch — keeping the process running and safe comes first."',layer:'OT mindset'},
+        {t:'"A failure here could cause a physical explosion or endanger workers."',layer:'OT mindset'},
+        {t:'"We push security patches automatically every month during business hours."',layer:'IT mindset'},
+        {t:'"Equipment runs 24/7 for a decade and may be too old to patch at all."',layer:'OT mindset'}
+      ]},
+    quiz:[
+      {q:'IEC 62443 primarily secures:',
+       o:['Consumer mobile apps','Industrial Automation and Control Systems (OT)','Payment card networks','Email servers'],a:1,
+       e:'IEC 62443 is the standard series for securing Industrial Automation and Control Systems — the operational technology running physical processes.'},
+      {q:'How do OT security priorities typically differ from IT?',
+       o:['They are identical','OT puts availability and safety first, ahead of confidentiality','OT ignores integrity','OT cares only about confidentiality'],a:1,
+       e:'In OT, keeping the physical process available and safe usually outranks confidentiality — the reverse of traditional IT priorities.'},
+      {q:'"Zones and Conduits" in IEC 62443 are used to:',
+       o:['Encrypt email','Segment the network so a breach cannot reach critical/safety systems','Replace passwords','Calculate financial loss'],a:1,
+       e:'Zones group assets by security need and conduits control traffic between them, containing breaches and protecting the most critical (e.g., safety) zones.'}
+    ]}
+  ]}
+];
+
+const TOTAL_LESSONS=CURRICULUM.reduce((a,m)=>a+m.lessons.length,0);
+</script>
+
+<script>
+/* =====================================================================
+   RENDER ENGINE
+   ===================================================================== */
+const ABOUT_LINKEDIN='https://www.linkedin.com/in/cyber-denise';
+
+function buildRail(){
+  const r=$('#railScroll');r.innerHTML='';
+  const about=el(`<div class="mod about-mod" data-mod="ABOUT">
+    <div class="mod-head">
+      <div class="mod-num">00</div>
+      <div class="mod-meta"><div class="t">About Denise Banks</div><div class="s">who built this &amp; why</div></div>
+      <div class="mod-chev">★</div>
+    </div></div>`);
+  about.querySelector('.mod-head').onclick=()=>renderAbout();
+  r.appendChild(about);
+  CURRICULUM.forEach(mod=>{
+    const locked=mod.locked;
+    const m=el(`<div class="mod ${locked?'locked':''}" data-mod="${mod.id}">
+      <div class="mod-head">
+        <div class="mod-num">${mod.num}</div>
+        <div class="mod-meta"><div class="t">${mod.title}</div><div class="s">${mod.sub}</div></div>
+        ${locked?'<div class="mod-chev">🔒</div>':'<div class="mod-status"></div><div class="mod-chev">▸</div>'}
+      </div>
+      <div class="lessons"></div></div>`);
+    const head=m.querySelector('.mod-head');
+    const lc=m.querySelector('.lessons');
+    mod.lessons.forEach(les=>{
+      const li=el(`<div class="lesson" data-lesson="${les.id}" data-mod="${mod.id}">
+        <span class="ln">${les.num}</span><span class="lt">${les.title}</span>
+        <svg class="tick" viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5L13 4.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`);
+      li.onclick=e=>{e.stopPropagation();openLesson(mod.id,les.id);};
+      lc.appendChild(li);
+    });
+    head.onclick=()=>{m.classList.toggle('open');};
+    r.appendChild(m);
+  });
+  $('#totalCount').textContent=TOTAL_LESSONS;
+}
+
+/* ---------- About / bio page ---------- */
+function renderAbout(){
+  CURRENT=null;
+  $$('.lesson').forEach(l=>l.classList.remove('active'));
+  $$('.mod').forEach(m=>m.classList.remove('active-mod'));
+  const am=$('.about-mod');if(am)am.classList.add('active-mod');
+  $('#stage').scrollTop=0;
+  $('#stageInner').innerHTML=`
+    <div class="about-wrap">
+      <div class="eyebrow">Module 00 · About</div>
+      <h1 class="about-h1">About Denise Banks</h1>
+      <div class="about-card">
+        <div class="about-badge">DB</div>
+        <div class="about-body">
+          <div class="about-name">Denise Banks</div>
+          <div class="about-role">Information Security Governance Professional</div>
+          <p>I'm an Information Security Governance professional teaching myself the major cybersecurity frameworks and standards from the ground up. I came up through the operations side of security as an Information Security Analyst before moving into governance, risk, and compliance, so I've worked both the hands-on, day-to-day defense of systems and the policy and oversight side. Frameworks and standards sit right at the intersection of the two, and I wanted to build real depth in how they actually get selected, implemented, and audited.</p>
+          <p>So rather than just read the standards, I took a practical approach: I built my own sandbox. <b>Frameworks Academy</b> is a self-contained, interactive learning environment where I work through the five essential groups of frameworks and standards — risk management frameworks like NIST CSF, the RMF, and ISO 27000; the controls and best practices of CIS, OWASP, MITRE ATT&amp;CK, and the Kill Chain; governance, audit, and maturity models like COBIT, SOC 2, and CMMC; the regulatory and compliance regimes from PCI DSS and HIPAA to GDPR, DORA, and NIS2; and the cloud and specialized standards including the CSA CCM, ISO 27017/27018, and IEC 62443.</p>
+          <p>Every lesson follows the same loop: learn a concept, study a worked example, complete a graded lab, then pass a checkpoint quiz, so the knowledge is applied, not just memorized. It mirrors the real decisions a governance professional makes day to day. Building it has deepened my understanding far more than reading alone ever could, and it doubles as a living portfolio of the skills I'm developing.</p>
+          <p>If you currently work in the GRC or security space, this is me showing my work. I'd love to connect.</p>
+          <p class="about-linkedin"><a href="${ABOUT_LINKEDIN}" target="_blank" rel="noopener noreferrer">🔗 linkedin.com/in/cyber-denise</a></p>
+        </div>
+      </div>
+      <div class="about-actions">
+        <button class="btn" id="aboutStart">Explore the curriculum →</button>
+        <button class="btn ghost" id="aboutResume">Resume the labs</button>
+      </div>
+    </div>`;
+  const s=$('#aboutStart');if(s)s.onclick=()=>renderHome();
+  const rb=$('#aboutResume');if(rb)rb.onclick=()=>{const t=resumeTarget();if(t)openLesson(t.modId,t.lessonId);};
+}
+
+/* ---------- welcome dashboard ---------- */
+function firstIncompleteLesson(){
+  const flat=flatLessons();
+  const hit=flat.find(x=>!STATE.done.has('L:'+x.lessonId));
+  return hit||flat[0];
+}
+function resumeTarget(){
+  if(STATE.last){
+    const m=CURRICULUM.find(x=>x.id===STATE.last.modId);
+    const l=m&&m.lessons.find(y=>y.id===STATE.last.lessonId);
+    if(l) return {modId:m.id,lessonId:l.id,mod:m,les:l};
+  }
+  return firstIncompleteLesson();
+}
+function renderHome(){
+  CURRENT=null;
+  $$('.lesson').forEach(l=>l.classList.remove('active'));
+  $$('.mod').forEach(m=>m.classList.remove('active-mod'));
+  const tracks=CURRICULUM.map(m=>{
+    const live=!m.locked&&m.lessons.length;
+    const doneN=m.lessons.filter(l=>STATE.done.has('L:'+l.id)).length;
+    const complete=live&&doneN===m.lessons.length;
+    return `<div class="track-card ${m.locked?'soon':''}" ${live?`data-open="${m.id}"`:''}>
+      <div class="tn">Module ${m.num}${complete?' · ✓':''}</div><h3>${m.title}</h3><p>${m.blurb}</p>
+      <div class="meta"><span>${m.lessons.length?m.lessons.length+' lessons':'in development'}</span>${live?`<span>${doneN}/${m.lessons.length} done</span>`:''}</div></div>`;
+  }).join('');
+  const lessonsDone=flatLessons().filter(x=>STATE.done.has('L:'+x.lessonId)).length;
+  const hasProgress=lessonsDone>0||STATE.xp>0;
+  const rt=resumeTarget();
+  const resumeVerb=hasProgress?'Resume where you left off':'Start the course';
+  const resumeWhat=rt?`Module ${rt.mod.num} · Lesson ${rt.les.num} — ${rt.les.title}`:'';
+  const storageNote=storageAvailable()
+    ? `<span class="pill" title="Your progress saves automatically in this browser">💾 progress saves automatically</span>`
+    : `<span class="pill" style="border-color:#5c4a1a;color:#f5d98a" title="This browser is blocking storage, so progress will reset on reload">⚠ progress won't persist in this browser</span>`;
+  $('#stageInner').innerHTML=`
+    <div class="hero">
+      <div class="eyebrow">Cybersecurity Frameworks &amp; Standards · Track 1</div>
+      <h1>Learn the frameworks by using them.</h1>
+      <p>No experience needed. You'll move through numbered lessons that teach a concept, show a worked example in a simulated console, drop you into a hands-on lab, then check your understanding — building real, portfolio-ready fluency in the standards that run modern security.</p>
+    </div>
+
+    <div class="resume-card" id="resumeCard">
+      <div class="resume-main">
+        <div class="resume-label">${hasProgress?'Welcome back':'Ready to begin'}</div>
+        <div class="resume-title">${resumeVerb}</div>
+        <div class="resume-sub">${resumeWhat}</div>
+        ${hasProgress?`<div class="resume-prog"><div class="resume-prog-bar"><i style="width:${(lessonsDone/TOTAL_LESSONS*100).toFixed(1)}%"></i></div><span>${lessonsDone} / ${TOTAL_LESSONS} lessons · Level ${levelFromXp(STATE.xp)} · ${STATE.xp} XP</span></div>`:''}
+      </div>
+      <button class="btn resume-btn" id="resumeBtn">${hasProgress?'Resume →':'Start lesson 01.1 →'}</button>
+    </div>
+    <div class="pill-set" style="margin:-2px 0 22px;align-items:center">
+      ${storageNote}
+      ${hasProgress?`<button class="pill reset-pill" id="resetBtn" title="Clear all saved progress">↺ reset progress</button>`:''}
+    </div>
+
+    <div class="stat-strip">
+      <div class="stat-box"><div class="v">${lessonsDone}</div><div class="l">lessons done</div></div>
+      <div class="stat-box"><div class="v">${TOTAL_LESSONS}</div><div class="l">total lessons</div></div>
+      <div class="stat-box"><div class="v" id="homeXp">${STATE.xp}</div><div class="l">your XP</div></div>
+      <div class="stat-box"><div class="v">${STATE.badges.size}</div><div class="l">badges</div></div>
+    </div>
+    <h2 style="font-family:var(--disp);font-size:22px;letter-spacing:-.4px;margin:30px 0 4px">The curriculum</h2>
+    <p style="color:var(--ink-dim);margin:0 0 8px">${CURRICULUM.length} modules, ${TOTAL_LESSONS} lessons. Each lesson runs Concept → Example → Lab → Checkpoint. Pick up anywhere — your place is saved automatically.</p>
+    <div class="track-grid">${tracks}</div>
+    <div class="callout tip" style="margin-top:18px"><span class="ic">🧭</span><div><b>How to use this:</b> work top to bottom, or jump to any module. Finishing labs and quizzes earns XP, levels, and badges. Your progress is stored in this browser, so you can close the tab and come back later right where you left off.</div></div>`;
+  const rb=$('#resumeBtn');if(rb)rb.onclick=()=>{const t=resumeTarget();if(t)openLesson(t.modId,t.lessonId);};
+  const rs=$('#resetBtn');if(rs)rs.onclick=()=>{
+    if(window.confirm('Reset all progress? This clears completed lessons, XP, and badges in this browser. This cannot be undone.')){
+      resetState();addXp(0);refreshProgressUI();renderHome();toast('↺','Progress reset','Starting fresh — good luck.');
+    }
+  };
+  $$('.track-card[data-open]').forEach(c=>c.onclick=()=>{const mid=c.dataset.open;const mod=CURRICULUM.find(x=>x.id===mid);
+    const firstUndone=mod.lessons.find(l=>!STATE.done.has('L:'+l.id))||mod.lessons[0];
+    openLesson(mid,firstUndone.id);
+    const mEl=$(`.mod[data-mod="${mid}"]`);if(mEl)mEl.classList.add('open');});
+}
+
+/* ---------- open a lesson ---------- */
+function openLesson(modId,lessonId){
+  const mod=CURRICULUM.find(m=>m.id===modId);
+  const lesson=mod.lessons.find(l=>l.id===lessonId);
+  if(!lesson)return;
+  CURRENT={modId,lessonId};
+  STATE.last={modId,lessonId};saveState();
+  $$('.mod').forEach(m=>m.classList.remove('active-mod'));
+  $$('.lesson').forEach(l=>l.classList.toggle('active',l.dataset.lesson===lessonId&&l.dataset.mod===modId));
+  const mEl=$(`.mod[data-mod="${modId}"]`);if(mEl&&!mEl.classList.contains('open'))mEl.classList.add('open');
+  $('#stage').scrollTop=0;
+
+  const stepData=[
+    {k:'concept',label:'Concept',sub:'learn'},
+    {k:'example',label:'Example',sub:'see it'},
+    {k:'lab',label:'Lab',sub:'do it'},
+    {k:'quiz',label:'Checkpoint',sub:'prove it'}
+  ];
+  $('#stageInner').innerHTML=`
+    <div class="crumb">Module <b>${mod.num}</b> · ${mod.title} <span style="opacity:.5">/</span> Lesson <b>${lesson.num}</b></div>
+    <div class="lesson-hd">
+      <div class="eyebrow">Lesson ${lesson.num} · ~${lesson.minutes} min</div>
+      <h1 class="title">${lesson.title}</h1>
+      <p class="dek">${lesson.dek}</p>
+    </div>
+    <div class="steps" id="steps">${stepData.map((s,i)=>`<div class="step ${i===0?'active':''}" data-step="${s.k}"><div class="sn">${i+1}</div><div class="sl">${s.label}<small>${s.sub}</small></div></div>`).join('')}</div>
+    <div class="panel-stage active" data-panel="concept"><div class="prose">${lesson.concept}</div></div>
+    <div class="panel-stage" data-panel="example"><div class="prose">${typeof lesson.example==='function'?lesson.example():lesson.example}</div></div>
+    <div class="panel-stage" data-panel="lab" id="labPanel"></div>
+    <div class="panel-stage" data-panel="quiz" id="quizPanel"></div>
+    <div class="lesson-nav" id="lessonNav"></div>`;
+
+  $$('#steps .step').forEach(st=>st.onclick=()=>switchStep(st.dataset.step));
+  renderLab(lesson);
+  renderQuiz(lesson);
+  buildLessonNav(mod,lesson);
+  markDone('S:'+lessonId+':concept',XP_PER.concept);
+}
+
+function switchStep(k){
+  $$('#steps .step').forEach(s=>s.classList.toggle('active',s.dataset.step===k));
+  $$('.panel-stage').forEach(p=>p.classList.toggle('active',p.dataset.panel===k));
+  $('#stage').scrollTop=Math.max(0,$('#steps').offsetTop-70);
+  if(k==='example'&&CURRENT)markDone('S:'+CURRENT.lessonId+':example',XP_PER.example);
+}
+function setStepDone(k){const s=$(`#steps .step[data-step="${k}"]`);if(s)s.classList.add('done');}
+
+/* ---------- lesson nav (prev/next) ---------- */
+function flatLessons(){const arr=[];CURRICULUM.forEach(m=>{if(!m.locked)m.lessons.forEach(l=>arr.push({modId:m.id,lessonId:l.id,mod:m,les:l}));});return arr;}
+function buildLessonNav(mod,lesson){
+  const flat=flatLessons();
+  const idx=flat.findIndex(x=>x.modId===mod.id&&x.lessonId===lesson.id);
+  const prev=flat[idx-1],next=flat[idx+1];
+  const nav=$('#lessonNav');nav.innerHTML='';
+  nav.appendChild(prev?el(`<button data-go='${prev.modId}|${prev.lessonId}'><span class="nl">← Previous</span><span class="nt">${prev.les.num} ${prev.les.title}</span></button>`)
+    :el(`<button disabled><span class="nl">← Previous</span><span class="nt">Start of track</span></button>`));
+  nav.appendChild(next?el(`<button class="next" data-go='${next.modId}|${next.lessonId}'><span class="nl">Next →</span><span class="nt">${next.les.num} ${next.les.title}</span></button>`)
+    :el(`<button class="next" data-home="1"><span class="nl">Track complete →</span><span class="nt">Back to overview</span></button>`));
+  $$('#lessonNav button[data-go]').forEach(b=>b.onclick=()=>{const[m,l]=b.dataset.go.split('|');openLesson(m,l);});
+  const hb=$('#lessonNav button[data-home]');if(hb)hb.onclick=()=>renderHome();
+}
+
+/* ===================================================================
+   LAB RENDERERS (dispatch by kind: classify, order, match, quizonly)
+   =================================================================== */
+function renderLab(lesson){
+  const p=$('#labPanel');const lab=lesson.lab;
+  if(!lab){p.innerHTML='<p class="empty-hint">No lab in this lesson.</p>';return;}
+  const head=`<div class="lab-frame"><div class="lab-top"><span class="badge-lab">Lab ${lesson.num}</span><h3>${lab.title}</h3></div>
+    <div class="lab-body"><div class="lab-objective">🎯 <b>Objective.</b> ${lab.objective}</div>
+    ${lab.intro?`<p style="color:var(--ink-dim);margin:12px 0 4px">${lab.intro}</p>`:''}
+    <div id="labMount"></div></div></div>`;
+  p.innerHTML=head;
+  const mount=$('#labMount');
+  const done=()=>{setStepDone('lab');markDone('S:'+lesson.id+':lab',XP_PER.lab);maybeCompleteLesson(lesson);earnBadge('lab:'+lesson.id,'🧪','Lab cleared!','+'+XP_PER.lab+' XP · '+lab.title);};
+  const fn={classify:labClassify,order:labOrder,match:labMatch,quizonly:labQuizOnly}[lab.kind];
+  if(fn)fn(mount,lab,done);else mount.innerHTML='<p class="empty-hint">Unknown lab type.</p>';
+}
+
+/* -- classify lab (N-way buttons) -- */
+function labClassify(mount,lab,done){
+  const cats=lab.threeway||['Authentication','Authorization'];
+  const state={};
+  mount.innerHTML=lab.items.map((it,i)=>`<div class="quiz-card" style="padding:14px 16px;margin:10px 0" data-i="${i}">
+    <div style="font-size:13.5px;margin-bottom:10px">${it.t}</div>
+    <div class="row">${cats.map(c=>`<button class="btn ghost sm cls" data-i="${i}" data-c="${esc(c)}">${c}</button>`).join('')}
+    <span class="tagout" data-i="${i}" style="font-family:var(--mono);font-size:11px"></span></div></div>`).join('')
+    +`<button class="btn" id="clsCheck" style="margin-top:8px">Check answers</button><div class="result" id="clsRes"></div>`;
+  $$('.cls',mount).forEach(b=>b.onclick=()=>{const i=b.dataset.i;state[i]=b.dataset.c;
+    $$(`.cls[data-i="${i}"]`,mount).forEach(x=>x.classList.toggle('ghost',x.dataset.c!==b.dataset.c));
+    const t=mount.querySelector(`.tagout[data-i="${i}"]`);t.textContent='→ '+b.dataset.c;t.style.color='var(--gold)';});
+  $('#clsCheck',mount).onclick=()=>{
+    const res=$('#clsRes',mount);let allRight=lab.items.length>0;const rows=[];
+    lab.items.forEach((it,i)=>{const got=state[i];const ok=got===it.layer;if(!ok)allRight=false;
+      rows.push(`<li><span class="mk">${ok?'✓':'✗'}</span><span>${ok?'<span style="color:#34d399">'+got+'</span>':'<span style="color:#f87171">'+(got||'—')+'</span> → should be <b>'+it.layer+'</b>'}</span></li>`);});
+    res.className='result show '+(allRight?'pass':'fail');
+    res.innerHTML=`<div class="rv">${allRight?'✓ All correct — lab cleared':'✗ Not yet — review the misses'}</div><ul>${rows.join('')}</ul>`;
+    if(allRight)done();
+  };
+}
+
+/* -- order lab (sequence the steps) -- */
+function labOrder(mount,lab,done){
+  let seq=[...lab.scrambled];
+  function render(){
+    mount.innerHTML=`<div class="lab-objective" style="background:var(--panel-2);border-color:var(--line);color:var(--ink-dim);margin-bottom:12px">Use ▲ / ▼ to reorder, then check.</div>
+      <div id="ordList"></div>
+      <button class="btn" id="ordCheck" style="margin-top:12px">Check order</button><div class="result" id="ordRes"></div>`;
+    const list=$('#ordList',mount);
+    seq.forEach((item,i)=>{
+      const row=el(`<div class="quiz-card" style="padding:11px 14px;margin:8px 0;display:flex;align-items:center;gap:12px">
+        <span style="font-family:var(--mono);color:var(--gold);font-weight:700;width:22px">${i+1}</span>
+        <span style="flex:1;font-size:13.5px">${item}</span>
+        <span class="row" style="gap:6px"><button class="btn ghost sm up" ${i===0?'disabled':''}>▲</button><button class="btn ghost sm dn" ${i===seq.length-1?'disabled':''}>▼</button></span>
+      </div>`);
+      row.querySelector('.up').onclick=()=>{[seq[i-1],seq[i]]=[seq[i],seq[i-1]];render();};
+      row.querySelector('.dn').onclick=()=>{[seq[i+1],seq[i]]=[seq[i],seq[i+1]];render();};
+      list.appendChild(row);
+    });
+    $('#ordCheck',mount).onclick=()=>{
+      const res=$('#ordRes',mount);
+      const ok=seq.every((s,i)=>s===lab.correct[i]);
+      res.className='result show '+(ok?'pass':'fail');
+      if(ok){res.innerHTML=`<div class="rv">✓ Correct order — lab cleared</div><ul>${lab.correct.map((s,i)=>`<li><span class="mk">${i+1}</span><span>${s}</span></li>`).join('')}</ul>`;done();}
+      else{const rows=seq.map((s,i)=>`<li><span class="mk">${s===lab.correct[i]?'✓':'✗'}</span><span>${s}</span></li>`).join('');
+        res.innerHTML=`<div class="rv">✗ Not the right sequence yet — keep adjusting</div><ul>${rows}</ul>`;}
+    };
+  }
+  render();
+}
+
+/* -- match lab (pair left to right) -- */
+function labMatch(mount,lab,done){
+  const lefts=lab.pairs.map((p,i)=>({...p,i}));
+  const rights=lab.pairs.map((p,i)=>p.r).sort(()=>Math.random()-0.5);
+  const choice={};
+  mount.innerHTML=lefts.map(p=>`<div class="quiz-card" style="padding:13px 15px;margin:9px 0">
+    <div style="font-size:13.5px;margin-bottom:9px"><b style="color:var(--gold)">${p.l}</b></div>
+    <select class="mt" data-i="${p.i}" style="max-width:520px"><option value="">— choose the match —</option>
+      ${rights.map(r=>`<option value="${esc(r)}">${r}</option>`).join('')}</select></div>`).join('')
+    +`<button class="btn" id="mtCheck" style="margin-top:8px">Check matches</button><div class="result" id="mtRes"></div>`;
+  $$('.mt',mount).forEach(s=>s.onchange=()=>{choice[s.dataset.i]=s.value;});
+  $('#mtCheck',mount).onclick=()=>{
+    const res=$('#mtRes',mount);let allRight=true;const rows=[];
+    lab.pairs.forEach((p,i)=>{const got=choice[i];const ok=got===p.r;if(!ok)allRight=false;
+      rows.push(`<li><span class="mk">${ok?'✓':'✗'}</span><span><b>${p.l}</b> → ${ok?'<span style="color:#34d399">'+got+'</span>':'<span style="color:#f87171">'+(got||'—')+'</span> → should be <b>'+p.r+'</b>'}</span></li>`);});
+    res.className='result show '+(allRight?'pass':'fail');
+    res.innerHTML=`<div class="rv">${allRight?'✓ All matched — lab cleared':'✗ Not yet — review the misses'}</div><ul>${rows.join('')}</ul>`;
+    if(allRight)done();
+  };
+}
+
+/* -- quiz-only lab -- */
+function labQuizOnly(mount,lab,done){
+  mount.innerHTML=`<div class="callout tip"><span class="ic">🧠</span><div>This lesson's practice lives in the checkpoint. Answer every checkpoint question correctly and this lab marks complete automatically.</div></div>`;
+  mount.dataset.autocomplete='1';
+}
+
+/* ===================================================================
+   QUIZ RENDERER
+   =================================================================== */
+function renderQuiz(lesson){
+  const p=$('#quizPanel');const bank=lesson.quiz||[];
+  if(!bank.length){p.innerHTML='<p class="empty-hint">No checkpoint in this lesson.</p>';return;}
+  p.innerHTML=`<h2 style="font-family:var(--disp);font-size:20px;margin:0 0 4px">Checkpoint</h2><p style="color:var(--ink-dim);margin:0 0 14px">Answer all ${bank.length} to complete the lesson. You can retry until each is right.</p><div id="quizMount"></div>`;
+  const mount=$('#quizMount');const correct=new Set();
+  bank.forEach((item,qi)=>{
+    const card=el(`<div class="quiz-card"><div class="quiz-progress">Question ${qi+1} of ${bank.length}</div><div class="quiz-q">${item.q}</div><div class="opts"></div><div class="quiz-explain"></div></div>`);
+    const opts=card.querySelector('.opts'),exp=card.querySelector('.quiz-explain');
+    item.o.forEach((o,oi)=>{
+      const b=el(`<button class="quiz-opt"><span class="ltr">${String.fromCharCode(65+oi)}</span><span>${o}</span></button>`);
+      b.onclick=()=>{
+        opts.querySelectorAll('.quiz-opt').forEach(x=>{x.classList.remove('correct','wrong');});
+        if(oi===item.a){b.classList.add('correct');card.dataset.locked='1';correct.add(qi);}
+        else{b.classList.add('wrong');opts.children[item.a].classList.add('correct');}
+        exp.classList.add('show');exp.innerHTML=(oi===item.a?'<b style="color:var(--green)">✓ Correct. </b>':'<b style="color:var(--red)">Not quite. </b>')+item.e;
+        if(correct.size===bank.length){setStepDone('quiz');if(markDone('S:'+lesson.id+':quiz',XP_PER.quiz))earnBadge('quiz:'+lesson.id,'✅','Checkpoint passed!','+'+XP_PER.quiz+' XP');
+          const lp=$('#labPanel #labMount');if(lp&&lp.dataset.autocomplete&&CURRENT){setStepDone('lab');if(markDone('S:'+lesson.id+':lab',XP_PER.lab))earnBadge('lab:'+lesson.id,'🧪','Lab cleared!','reasoning complete');}
+          maybeCompleteLesson(lesson);
+        }
+      };
+      opts.appendChild(b);
+    });
+    mount.appendChild(card);
+  });
+}
+
+/* ---------- lesson completion ---------- */
+function maybeCompleteLesson(lesson){
+  const need=['concept','lab','quiz'].map(s=>'S:'+lesson.id+':'+s);
+  if(need.every(k=>STATE.done.has(k))){
+    if(markDone('L:'+lesson.id,XP_PER.lesson)){
+      earnBadge('lesson:'+lesson.id,'🎖️','Lesson '+lesson.num+' complete!','You finished "'+lesson.title+'"');
+      const mod=CURRICULUM.find(m=>m.lessons.some(l=>l.id===lesson.id));
+      if(mod.lessons.every(l=>STATE.done.has('L:'+l.id)))
+        setTimeout(()=>earnBadge('mod:'+mod.id,'🏆','Module '+mod.num+' mastered!','"'+mod.title+'" — outstanding work'),1200);
+    }
+  }
+  refreshProgressUI();
+}
+
+/* ---------- boot ---------- */
+loadState();
+buildRail();
+addXp(0);
+refreshProgressUI();
+renderHome();
+const _homeLogo=$('#homeLogo'); if(_homeLogo)_homeLogo.onclick=()=>renderHome();
+const _navHome=$('#navHome'); if(_navHome)_navHome.onclick=()=>renderHome();
+function paintSoundBtn(){ const b=$('#soundBtn'); if(b){ const on=SOUND.isOn(); b.textContent = on?'♪ Sound on':'♪ Muted'; b.title = on?'Sound on (click to mute)':'Sound muted (click to enable)'; b.setAttribute('aria-pressed', on?'true':'false'); b.classList.toggle('muted',!on); } }
+const _sb=$('#soundBtn'); if(_sb){ paintSoundBtn(); _sb.onclick=()=>{ const on=SOUND.toggle(); paintSoundBtn(); if(on)SOUND.tick(); }; }
+(function(){
+  const stage=$('#stage'); if(!stage||typeof MutationObserver==='undefined')return;
+  const obs=new MutationObserver(muts=>{
+    for(const mu of muts){
+      const t=mu.target;
+      if(t&&t.classList&&t.classList.contains('result')&&t.classList.contains('fail')&&t.classList.contains('show')){
+        if(t.dataset.snd!=='f'){ t.dataset.snd='f'; try{SOUND.error();}catch(e){} }
+      }
+      if(t&&t.classList&&t.classList.contains('result')&&t.classList.contains('pass')){ t.dataset.snd='p'; }
+    }
+  });
+  obs.observe(stage,{subtree:true,attributes:true,attributeFilter:['class']});
+})();
+</script>
+</body>
+</html>

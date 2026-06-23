@@ -1,2 +1,2 @@
 # security-frameworks
-Gamified pathways that teach you cybersecurity frameworks and global standards requiring no prior experience. 
+Gamified training pathways that teaches voluntary standards, compliance and best practices for cybersecurity risk management. 
